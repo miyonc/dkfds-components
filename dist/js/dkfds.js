@@ -5709,7 +5709,54 @@ function generateUniqueId() {
 function generateUniqueIdWithPrefix(str) {
   return str + crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
 }
+;// ./src/js/custom-elements/accordion/renderAccordionHTML.js
+
+function renderAccordionHTML() {
+  let {
+    heading = '',
+    headingLevel = 'h3',
+    expanded = false,
+    contentId = '',
+    variantText = '',
+    variantIcon = '',
+    content = ''
+  } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  const id = contentId || generateUniqueIdWithPrefix('acc');
+  const ariaExpanded = expanded ? 'true' : 'false';
+  const ariaHidden = expanded ? 'false' : 'true';
+  const variantMarkup = variantText && variantIcon ? `<span class="accordion-icon">
+                    <span class="icon_text">${variantText}</span>
+                    <svg class="icon-svg" focusable="false" aria-hidden="true">
+                        <use href="#${variantIcon}"></use>
+                    </svg>
+                </span>` : '';
+  return `
+    <fds-accordion
+    heading="${heading}"
+    heading-level="${headingLevel}"
+    expanded="${ariaExpanded}"
+    content-id="${id}"
+    ${variantText ? `variant-text="${variantText}"` : ''}
+    ${variantIcon ? `variant-icon="${variantIcon}"` : ''}>
+        <${headingLevel}>
+            <button class="accordion-button"
+                    type="button"
+                    aria-expanded="${ariaExpanded}"
+                    aria-controls="${id}">
+            <span class="accordion-title">${heading}</span>
+            ${variantMarkup}
+            </button>
+        </${headingLevel}>
+        <div class="accordion-content"
+            id="${id}"
+            aria-hidden="${ariaHidden}">
+            <p>${content}</p>
+        </div>
+    </fds-accordion>
+  `.trim();
+}
 ;// ./src/js/custom-elements/accordion/fds-accordion.js
+
 
 
 
@@ -5734,26 +5781,20 @@ class FDSAccordion extends HTMLElement {
       } while (document.getElementById(defaultId));
       let defaultHeadingLevel = 'h3';
       this.#expanded = false;
-
-      /* Accordion heading */
-
-      const heading = document.createElement('span');
-      heading.classList.add('accordion-title');
-      const accordionButton = document.createElement('button');
-      accordionButton.classList.add('accordion-button');
-      accordionButton.setAttribute('aria-expanded', 'true');
-      accordionButton.setAttribute('type', 'button');
-      accordionButton.setAttribute('aria-controls', defaultId);
-      this.#headingElement = document.createElement(defaultHeadingLevel);
-      accordionButton.appendChild(heading);
-      this.#headingElement.appendChild(accordionButton);
-
-      /* Accordion content */
-
-      this.#contentElement = document.createElement('div');
-      this.#contentElement.classList.add('accordion-content');
-      this.#contentElement.setAttribute('id', defaultId);
-      this.#contentElement.setAttribute('aria-hidden', 'false');
+      const html = renderAccordionHTML({
+        heading: '',
+        headingLevel: defaultHeadingLevel,
+        expanded: this.#expanded,
+        contentId: defaultId,
+        variantText: '',
+        variantIcon: '',
+        content: ''
+      });
+      const template = document.createElement('template');
+      template.innerHTML = html;
+      const wrapper = template.content.querySelector('fds-accordion');
+      this.#headingElement = wrapper.querySelector(defaultHeadingLevel);
+      this.#contentElement = wrapper.querySelector('.accordion-content');
       while (this.firstChild) {
         this.#contentElement.appendChild(this.firstChild);
       }

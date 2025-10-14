@@ -1,5 +1,5 @@
 'use strict';
-
+import { renderAccordionHTML } from './renderAccordionHTML.js';
 import { generateUniqueIdWithPrefix } from '../../utils/generate-unique-id';
 
 class FDSAccordion extends HTMLElement {
@@ -30,28 +30,22 @@ class FDSAccordion extends HTMLElement {
 
             this.#expanded = false;
 
-            /* Accordion heading */
+            const html = renderAccordionHTML({
+                heading: '',
+                headingLevel: defaultHeadingLevel,
+                expanded: this.#expanded,
+                contentId: defaultId,
+                variantText: '',
+                variantIcon: '',
+                content: '',
+            });
 
-            const heading = document.createElement('span');
-            heading.classList.add('accordion-title');
+            const template = document.createElement('template');
+            template.innerHTML = html;
+            const wrapper = template.content.querySelector('fds-accordion');
 
-            const accordionButton = document.createElement('button');
-            accordionButton.classList.add('accordion-button');
-            accordionButton.setAttribute('aria-expanded', 'true');
-            accordionButton.setAttribute('type', 'button');
-            accordionButton.setAttribute('aria-controls', defaultId);
-
-            this.#headingElement = document.createElement(defaultHeadingLevel);
-
-            accordionButton.appendChild(heading);
-            this.#headingElement.appendChild(accordionButton);
-
-            /* Accordion content */
-
-            this.#contentElement = document.createElement('div');
-            this.#contentElement.classList.add('accordion-content');
-            this.#contentElement.setAttribute('id', defaultId);
-            this.#contentElement.setAttribute('aria-hidden', 'false');
+            this.#headingElement = wrapper.querySelector(defaultHeadingLevel);
+            this.#contentElement = wrapper.querySelector('.accordion-content');
 
             while (this.firstChild) {
                 this.#contentElement.appendChild(this.firstChild);
