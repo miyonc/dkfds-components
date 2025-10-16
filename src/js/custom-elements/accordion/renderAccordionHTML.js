@@ -24,18 +24,27 @@ export function renderAccordionHTML({
             : '';
 
     return `
-    <${headingLevel}>
-        <button class="accordion-button"
-                type="button"
-                aria-expanded="${ariaExpanded}"
-                aria-controls="${contentId}">
+    <fds-accordion
+    heading="${heading}"
+    heading-level="${headingLevel}"
+    expanded="${ariaExpanded}"
+    content-id="${id}"
+    ${variantText ? `variant-text="${variantText}"` : ''}
+    ${variantIcon ? `variant-icon="${variantIcon}"` : ''}>
+        <${headingLevel}>
+            <button class="accordion-button"
+                    type="button"
+                    aria-expanded="${ariaExpanded}"
+                    aria-controls="${id}">
             <span class="accordion-title">${heading}</span>
             ${variantMarkup}
-        </button>
-    </${headingLevel}>
-    <div class="accordion-content"
-        id="${contentId}"
-        aria-hidden="${ariaHidden}">
-    <p>${content}</p>
-    </div>`.trim();
+            </button>
+        </${headingLevel}>
+        <div class="accordion-content"
+            id="${id}"
+            aria-hidden="${ariaHidden}">
+            <p>${content}</p>
+        </div>
+    </fds-accordion>
+  `.trim();
 }
