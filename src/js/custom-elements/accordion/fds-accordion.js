@@ -17,7 +17,10 @@ class FDSAccordion extends HTMLElement {
     /* Private methods */
 
     #init() {
-        if (!this.#initialized) {
+        if (this.children.length === 2) {
+            console.log('Already initialized');
+        }
+        else {
 
             /* Default values */
 
@@ -41,11 +44,10 @@ class FDSAccordion extends HTMLElement {
             });
 
             const template = document.createElement('template');
-            template.innerHTML = html;
-            const wrapper = template.content.querySelector('fds-accordion');
+            template.innerHTML = html.trim();
 
-            this.#headingElement = wrapper.querySelector(defaultHeadingLevel);
-            this.#contentElement = wrapper.querySelector('.accordion-content');
+            this.#headingElement = template.content.querySelector(defaultHeadingLevel);
+            this.#contentElement = template.content.querySelector('.accordion-content');
 
             while (this.firstChild) {
                 this.#contentElement.appendChild(this.firstChild);

@@ -5731,29 +5731,20 @@ function renderAccordionHTML() {
                     </svg>
                 </span>` : '';
   return `
-    <fds-accordion
-    heading="${heading}"
-    heading-level="${headingLevel}"
-    expanded="${ariaExpanded}"
-    content-id="${id}"
-    ${variantText ? `variant-text="${variantText}"` : ''}
-    ${variantIcon ? `variant-icon="${variantIcon}"` : ''}>
-        <${headingLevel}>
-            <button class="accordion-button"
-                    type="button"
-                    aria-expanded="${ariaExpanded}"
-                    aria-controls="${id}">
+    <${headingLevel}>
+        <button class="accordion-button"
+                type="button"
+                aria-expanded="${ariaExpanded}"
+                aria-controls="${contentId}">
             <span class="accordion-title">${heading}</span>
             ${variantMarkup}
-            </button>
-        </${headingLevel}>
-        <div class="accordion-content"
-            id="${id}"
-            aria-hidden="${ariaHidden}">
-            <p>${content}</p>
-        </div>
-    </fds-accordion>
-  `.trim();
+        </button>
+    </${headingLevel}>
+    <div class="accordion-content"
+        id="${contentId}"
+        aria-hidden="${ariaHidden}">
+    <p>${content}</p>
+    </div>`.trim();
 }
 ;// ./src/js/custom-elements/accordion/fds-accordion.js
 
@@ -5772,7 +5763,9 @@ class FDSAccordion extends HTMLElement {
   /* Private methods */
 
   #init() {
-    if (!this.#initialized) {
+    if (this.children.length === 2) {
+      console.log('Already initialized');
+    } else {
       /* Default values */
 
       let defaultId = '';
@@ -5791,10 +5784,9 @@ class FDSAccordion extends HTMLElement {
         content: ''
       });
       const template = document.createElement('template');
-      template.innerHTML = html;
-      const wrapper = template.content.querySelector('fds-accordion');
-      this.#headingElement = wrapper.querySelector(defaultHeadingLevel);
-      this.#contentElement = wrapper.querySelector('.accordion-content');
+      template.innerHTML = html.trim();
+      this.#headingElement = template.content.querySelector(defaultHeadingLevel);
+      this.#contentElement = template.content.querySelector('.accordion-content');
       while (this.firstChild) {
         this.#contentElement.appendChild(this.firstChild);
       }
