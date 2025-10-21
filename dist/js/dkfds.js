@@ -6004,10 +6004,19 @@ class FDSAccordion extends HTMLElement {
   }
 }
 /* harmony default export */ const fds_accordion = (FDSAccordion);
+;// ./src/js/custom-elements/accordion/validateAccordionGroupHTML.js
+function validateAccordionGroupHTML(groupElement) {
+  if (!groupElement) return false;
+  const hasAccordions = groupElement.querySelectorAll(':scope > fds-accordion').length > 0;
+  return hasAccordions;
+}
 ;// ./src/js/custom-elements/accordion/fds-accordion-group.js
 
 
+
 class FDSAccordionGroup extends HTMLElement {
+  #expandedAll = false;
+
   /* Private methods */
 
   #updateHeadingLevel(headingLevel) {
@@ -6015,6 +6024,31 @@ class FDSAccordionGroup extends HTMLElement {
     for (let i = 0; i < accordions.length; i++) {
       accordions[i].setAttribute('heading-level', headingLevel);
     }
+  }
+  #setupBulkButton() {
+    let button = this.querySelector(':scope > .accordion-bulk-button');
+    ;
+    if (!button) {
+      button = document.createElement('button');
+      button.classList.add('accordion-bulk-button');
+      button.textContent = 'Åbn alle';
+      this.prepend(button);
+    }
+    button.addEventListener('click', () => this.#toggleAllAccordions());
+  }
+  #updateBulkButtonText() {
+    const button = this.querySelector(':scope > .accordion-bulk-button');
+    if (button) {
+      button.textContent = this.#expandedAll ? 'Luk alle' : 'Åbn alle';
+    }
+  }
+  #toggleAllAccordions() {
+    const accordions = this.querySelectorAll(':scope > fds-accordion');
+    accordions.forEach(acc => {
+      acc.setAttribute('expanded', this.#expandedAll ? 'false' : 'true');
+    });
+    this.#expandedAll = !this.#expandedAll;
+    this.#updateBulkButtonText();
   }
 
   /* Attributes which can invoke attributeChangedCallback() */
@@ -6034,6 +6068,9 @@ class FDSAccordionGroup extends HTMLElement {
   -------------------------------------------------- */
 
   connectedCallback() {
+    const isValid = validateAccordionGroupHTML(this);
+    if (!isValid) return;
+    this.#setupBulkButton();
     if (this.hasAttribute('heading-level')) {
       this.#updateHeadingLevel(this.getAttribute('heading-level'));
     }
