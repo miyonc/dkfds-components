@@ -6008,9 +6008,21 @@ function validateAccordionGroupHTML(groupElement) {
   if (!groupElement) return false;
   const children = Array.from(groupElement.children);
   if (children.length === 0) return false;
-  const allAreAccordions = children.every(child => child.tagName === 'FDS-ACCORDION');
-  if (!allAreAccordions) return false;
-  return true;
+  let bulkButtonCount = 0;
+  let hasAccordion = false;
+  for (const child of children) {
+    if (child.tagName === 'FDS-ACCORDION') {
+      hasAccordion = true;
+      continue;
+    }
+    if (child.tagName === 'BUTTON' && child.classList.contains('accordion-bulk-button')) {
+      bulkButtonCount++;
+      if (bulkButtonCount > 1) return false;
+      continue;
+    }
+    return false; // Invalid child
+  }
+  return hasAccordion;
 }
 ;// ./src/js/custom-elements/accordion/renderAccordionGroupHTML.js
 function renderAccordionGroupHTML() {
@@ -6038,7 +6050,9 @@ class FDSAccordionGroup extends HTMLElement {
       this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
       button = this.querySelector(':scope > .accordion-bulk-button');
     }
-    button.addEventListener('click', () => this.#toggleAllAccordions());
+    if (button) {
+      button.addEventListener('click', () => this.#toggleAllAccordions());
+    }
   }
   #updateBulkButtonText() {
     const button = this.querySelector(':scope > .accordion-bulk-button');

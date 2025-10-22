@@ -23,7 +23,9 @@ class FDSAccordionGroup extends HTMLElement {
             button = this.querySelector(':scope > .accordion-bulk-button');
         } 
 
-        button.addEventListener('click', () => this.#toggleAllAccordions());
+        if (button) {
+            button.addEventListener('click', () => this.#toggleAllAccordions());
+        }
     }
 
     #updateBulkButtonText() {
