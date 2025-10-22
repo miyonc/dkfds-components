@@ -9,8 +9,6 @@ class FDSAccordion extends HTMLElement {
     /* Private instance fields */
 
     #initialized;
-    #expanded;
-
     #handleAccordionClick;
 
     /* Private methods */
@@ -26,14 +24,11 @@ class FDSAccordion extends HTMLElement {
                 // Capture existing child nodes to preserve functionality
                 const preservedNodes = Array.from(this.childNodes);
 
-                // Set expanded state
-                this.#expanded = this.getAttribute('expanded') !== null && this.getAttribute('expanded') !== 'false';
-
                 // Render inner markup
                 const inner = renderAccordionHTML({
                     heading: this.getAttribute('heading') || '',
                     headingLevel: (this.getAttribute('heading-level') || 'h3').toLowerCase(),
-                    expanded: this.#expanded,
+                    expanded: this.isExpanded(),
                     contentId: '',
                     content: '',
                 });
@@ -64,12 +59,11 @@ class FDSAccordion extends HTMLElement {
     }
 
     #updateExpanded(expanded) {
-        this.#expanded = expanded === "true" ? true : false;
-        if (this.#expanded) {
+        if (expanded !== null && expanded !== "false") { 
             this.expandAccordion();
         }
-        else {
-            this.collapseAccordion();
+        else { 
+            this.collapseAccordion(); 
         }
     }
 
@@ -120,7 +114,6 @@ class FDSAccordion extends HTMLElement {
         return this.querySelector('.accordion-content');
     }
 
-
     /* Attributes which can invoke attributeChangedCallback() */
 
     static observedAttributes = ['heading', 'heading-level', 'expanded', 'content-id', 'variant-text', 'variant-icon'];
@@ -147,25 +140,29 @@ class FDSAccordion extends HTMLElement {
     }
 
     /* --------------------------------------------------
-    CUSTOM ELEMENT FUNCTIONS
+    CUSTOM ELEMENT METHODS
     -------------------------------------------------- */
 
     expandAccordion() {
         this.#getHeadingElement().querySelector('button.accordion-button').setAttribute('aria-expanded', 'true');
         this.#getContentElement().setAttribute('aria-hidden', 'false');
-        this.#expanded = true;
+        if (this.getAttribute('expanded') === null || this.getAttribute('expanded') === 'false') {
+            this.setAttribute('expanded', 'true');
+        }
         this.dispatchEvent(new Event('fds-accordion-expanded'));
     }
 
     collapseAccordion() {
         this.#getHeadingElement().querySelector('button.accordion-button').setAttribute('aria-expanded', 'false');
         this.#getContentElement().setAttribute('aria-hidden', 'true');
-        this.#expanded = false;
+        if (this.hasAttribute('expanded')) {
+            this.setAttribute('expanded', 'false');
+        }
         this.dispatchEvent(new Event('fds-accordion-collapsed'));
     }
 
     toggleAccordion() {
-        if (this.#expanded) {
+        if (this.isExpanded()) {
             this.collapseAccordion();
         }
         else {
@@ -174,7 +171,7 @@ class FDSAccordion extends HTMLElement {
     }
 
     isExpanded() {
-        return this.#expanded;
+        return this.getAttribute('expanded') !== null && this.getAttribute('expanded') !== 'false';
     }
 
     /* --------------------------------------------------
@@ -239,7 +236,7 @@ class FDSAccordion extends HTMLElement {
                 this.#updateHeadingLevel(newValue);
             }
 
-            if (attribute === 'expanded') {
+            if (attribute === 'expanded' && oldValue !== newValue) {
                 this.#updateExpanded(newValue);
             }
 
