@@ -1,6 +1,7 @@
 'use strict';
 
 import { validateAccordionGroupHTML } from './validateAccordionGroupHTML.js'
+import { renderAccordionGroupHTML } from './renderAccordionGroupHTML.js'
 
 class FDSAccordionGroup extends HTMLElement {
 
@@ -18,10 +19,8 @@ class FDSAccordionGroup extends HTMLElement {
     #setupBulkButton() {
         let button = this.querySelector(':scope > .accordion-bulk-button');
         if (!button) {
-            button = document.createElement('button');
-            button.classList.add('accordion-bulk-button');
-            button.textContent = 'Åbn alle';
-            this.prepend(button);
+            this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
+            button = this.querySelector(':scope > .accordion-bulk-button');
         } 
 
         button.addEventListener('click', () => this.#toggleAllAccordions());
