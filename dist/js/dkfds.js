@@ -2199,7 +2199,7 @@ const datePicker = behavior(datePickerEvents, {
 
 /***/ }),
 
-/***/ 204:
+/***/ 823:
 /***/ (() => {
 
 "use strict";
@@ -2234,7 +2234,7 @@ if (!(HIDDEN in elproto)) {
 __webpack_require__(952);
 
 // polyfills HTMLElement.prototype.hidden
-__webpack_require__(204);
+__webpack_require__(823);
 
 // polyfills Number.isNaN()
 __webpack_require__(259);
@@ -6012,7 +6012,12 @@ function validateAccordionGroupHTML(groupElement) {
   if (!allAreAccordions) return false;
   return true;
 }
+;// ./src/js/custom-elements/accordion/renderAccordionGroupHTML.js
+function renderAccordionGroupHTML() {
+  return `<button class="accordion-bulk-button">Åbn alle</button>`;
+}
 ;// ./src/js/custom-elements/accordion/fds-accordion-group.js
+
 
 
 
@@ -6030,10 +6035,8 @@ class FDSAccordionGroup extends HTMLElement {
   #setupBulkButton() {
     let button = this.querySelector(':scope > .accordion-bulk-button');
     if (!button) {
-      button = document.createElement('button');
-      button.classList.add('accordion-bulk-button');
-      button.textContent = 'Åbn alle';
-      this.prepend(button);
+      this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
+      button = this.querySelector(':scope > .accordion-bulk-button');
     }
     button.addEventListener('click', () => this.#toggleAllAccordions());
   }
