@@ -16,7 +16,7 @@ class FDSAccordionGroup extends HTMLElement {
     }
 
     #setupBulkButton() {
-        let button = this.querySelector(':scope > .accordion-bulk-button');;
+        let button = this.querySelector(':scope > .accordion-bulk-button');
         if (!button) {
             button = document.createElement('button');
             button.classList.add('accordion-bulk-button');

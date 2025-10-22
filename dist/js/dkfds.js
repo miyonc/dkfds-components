@@ -6007,8 +6007,11 @@ class FDSAccordion extends HTMLElement {
 ;// ./src/js/custom-elements/accordion/validateAccordionGroupHTML.js
 function validateAccordionGroupHTML(groupElement) {
   if (!groupElement) return false;
-  const hasAccordions = groupElement.querySelectorAll(':scope > fds-accordion').length > 0;
-  return hasAccordions;
+  const children = Array.from(groupElement.children);
+  if (children.length === 0) return false;
+  const allAreAccordions = children.every(child => child.tagName === 'FDS-ACCORDION');
+  if (!allAreAccordions) return false;
+  return true;
 }
 ;// ./src/js/custom-elements/accordion/fds-accordion-group.js
 
@@ -6027,7 +6030,6 @@ class FDSAccordionGroup extends HTMLElement {
   }
   #setupBulkButton() {
     let button = this.querySelector(':scope > .accordion-bulk-button');
-    ;
     if (!button) {
       button = document.createElement('button');
       button.classList.add('accordion-bulk-button');

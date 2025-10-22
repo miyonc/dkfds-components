@@ -1,7 +1,11 @@
 export function validateAccordionGroupHTML(groupElement) {
   if (!groupElement) return false;
 
-  const hasAccordions = groupElement.querySelectorAll(':scope > fds-accordion').length > 0;
+  const children = Array.from(groupElement.children);
+  if (children.length === 0) return false;
 
-  return hasAccordions;
+  const allAreAccordions = children.every(child => child.tagName === 'FDS-ACCORDION');
+  if (!allAreAccordions) return false;
+
+  return true;
 }
