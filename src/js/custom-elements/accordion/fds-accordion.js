@@ -149,7 +149,10 @@ class FDSAccordion extends HTMLElement {
         if (this.getAttribute('expanded') === null || this.getAttribute('expanded') === 'false') {
             this.setAttribute('expanded', 'true');
         }
-        this.dispatchEvent(new Event('fds-accordion-expanded'));
+        this.dispatchEvent(new CustomEvent('fds-accordion-expanded', {
+            bubbles: true,
+            composed: true
+        }));
     }
 
     collapseAccordion() {
@@ -158,7 +161,10 @@ class FDSAccordion extends HTMLElement {
         if (this.hasAttribute('expanded')) {
             this.setAttribute('expanded', 'false');
         }
-        this.dispatchEvent(new Event('fds-accordion-collapsed'));
+        this.dispatchEvent(new CustomEvent('fds-accordion-collapsed', {
+            bubbles: true,
+            composed: true
+        }));
     }
 
     toggleAccordion() {
