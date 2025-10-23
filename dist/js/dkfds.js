@@ -6047,9 +6047,11 @@ class FDSAccordionGroup extends HTMLElement {
   #init() {
     if (!this.#initialized) {
       let button = this.querySelector(':scope > .accordion-bulk-button');
-      if (!button) {
-        this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
-        button = this.querySelector(':scope > .accordion-bulk-button');
+      if (this.hasAttribute('has-bulk-button')) {
+        if (!button) {
+          this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
+          button = this.querySelector(':scope > .accordion-bulk-button');
+        }
       }
       if (button) {
         button.addEventListener('click', () => this.toggleAllAccordions());
@@ -6076,15 +6078,27 @@ class FDSAccordionGroup extends HTMLElement {
     button.textContent = this.#areAllExpanded() ? 'Luk alle' : 'Åbn alle';
   }
   #updateHeadingLevel(headingLevel) {
-    const accordions = this.querySelectorAll(':scope > fds-accordion');
+    const accordions = this.#getAllAccordions();
     for (let i = 0; i < accordions.length; i++) {
       accordions[i].setAttribute('heading-level', headingLevel);
+    }
+  }
+  #updateHasBulkButton(newValue) {
+    const button = this.querySelector(':scope > .accordion-bulk-button');
+    if (newValue === 'true' && !button) {
+      this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
+      const newButton = this.querySelector(':scope > .accordion-bulk-button');
+      newButton.addEventListener('click', () => this.toggleAllAccordions());
+      this.#updateBulkButtonText();
+    }
+    if (newValue !== 'true' && button) {
+      button.remove();
     }
   }
 
   /* Attributes which can invoke attributeChangedCallback() */
 
-  static observedAttributes = ['heading-level'];
+  static observedAttributes = ['heading-level', 'has-bulk-button'];
 
   /* --------------------------------------------------
   CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -6100,7 +6114,6 @@ class FDSAccordionGroup extends HTMLElement {
 
   toggleAllAccordions() {
     const accordions = this.#getAllAccordions();
-    if (accordions.length === 0) return;
     const shouldExpandAll = !this.#areAllExpanded();
     const newValue = shouldExpandAll ? 'true' : 'false';
     accordions.forEach(acc => acc.setAttribute('expanded', newValue));
@@ -6129,6 +6142,9 @@ class FDSAccordionGroup extends HTMLElement {
   attributeChangedCallback(attribute, oldValue, newValue) {
     if (attribute === 'heading-level') {
       this.#updateHeadingLevel(newValue);
+    }
+    if (attribute === 'has-bulk-button') {
+      this.#updateHasBulkButton(newValue);
     }
   }
 }
