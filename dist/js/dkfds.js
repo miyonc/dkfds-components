@@ -6044,24 +6044,34 @@ class FDSAccordionGroup extends HTMLElement {
 
   /* Private methods */
 
-  #init() {
-    if (!this.#initialized) {
-      let button = this.querySelector(':scope > .accordion-bulk-button');
-      const attr = this.getAttribute('has-bulk-button');
-      const hasBulkButton = attr === '' || attr === 'true';
-      if (hasBulkButton) {
-        if (!button) {
-          this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
-          button = this.querySelector(':scope > .accordion-bulk-button');
-        }
-      }
-      if (button) {
-        button.addEventListener('click', () => this.toggleAllAccordions());
-      }
-      this.addEventListener('fds-accordion-expanded', () => this.#updateBulkButtonText());
-      this.addEventListener('fds-accordion-collapsed', () => this.#updateBulkButtonText());
-      this.#initialized = true;
+  #getBulkButton() {
+    return this.querySelector(':scope > .accordion-bulk-button');
+  }
+  #ensureBulkButton() {
+    let button = this.#getBulkButton();
+    if (!button) {
+      this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
+      button = this.#getBulkButton();
     }
+
+    // Bind once
+    if (button && !button.dataset.fdsBound) {
+      button.addEventListener('click', () => this.toggleAllAccordions());
+      button.dataset.fdsBound = '1';
+    }
+    return button;
+  }
+  #init() {
+    if (this.#initialized) return;
+    const attr = this.getAttribute('has-bulk-button');
+    const hasBulkButton = attr === '' || attr === 'true';
+    if (hasBulkButton) this.#ensureBulkButton();
+    this.addEventListener('fds-accordion-expanded', () => this.#updateBulkButtonText());
+    this.addEventListener('fds-accordion-collapsed', () => this.#updateBulkButtonText());
+    this.#initialized = true;
+  }
+  #updateHeadingLevel(headingLevel) {
+    this.#getAllAccordions().forEach(acc => acc.setAttribute('heading-level', headingLevel));
   }
   #getAllAccordions() {
     return Array.from(this.querySelectorAll(':scope > fds-accordion'));
@@ -6075,32 +6085,22 @@ class FDSAccordionGroup extends HTMLElement {
     });
   }
   #updateBulkButtonText() {
-    const button = this.querySelector(':scope > .accordion-bulk-button');
+    const button = this.#getBulkButton();
     if (!button) return;
-    button.textContent = this.#areAllExpanded() ? 'Luk alle' : 'Åbn alle';
+    const openText = this.getAttribute('open-all-text') || 'Åbn alle';
+    const closeText = this.getAttribute('close-all-text') || 'Luk alle';
+    button.textContent = this.#areAllExpanded() ? closeText : openText;
   }
-  #updateHeadingLevel(headingLevel) {
-    const accordions = this.#getAllAccordions();
-    for (let i = 0; i < accordions.length; i++) {
-      accordions[i].setAttribute('heading-level', headingLevel);
-    }
-  }
-  #updateHasBulkButton() {
-    const button = this.querySelector(':scope > .accordion-bulk-button');
-    if (newValue === 'true' && !button) {
-      this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
-      const newButton = this.querySelector(':scope > .accordion-bulk-button');
-      newButton.addEventListener('click', () => this.toggleAllAccordions());
-      this.#updateBulkButtonText();
-    }
-    if (newValue !== 'true' && button) {
-      button.remove();
-    }
+  #updateHasBulkButton(attrValue) {
+    const hasBulkButton = attrValue === '' || attrValue === 'true';
+    const button = this.#getBulkButton();
+    if (hasBulkButton) this.#ensureBulkButton();else if (button) button.remove();
+    this.#updateBulkButtonText();
   }
 
   /* Attributes which can invoke attributeChangedCallback() */
 
-  static observedAttributes = ['heading-level', 'has-bulk-button'];
+  static observedAttributes = ['heading-level', 'has-bulk-button', 'open-all-text', 'close-all-text'];
 
   /* --------------------------------------------------
   CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -6147,6 +6147,9 @@ class FDSAccordionGroup extends HTMLElement {
     }
     if (attribute === 'has-bulk-button') {
       this.#updateHasBulkButton(newValue);
+    }
+    if (attribute === 'open-all-text' || attribute === 'close-all-text') {
+      this.#updateBulkButtonText();
     }
   }
 }
