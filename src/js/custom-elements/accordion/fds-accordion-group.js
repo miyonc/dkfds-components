@@ -12,8 +12,9 @@ class FDSAccordionGroup extends HTMLElement {
     #init() {
         if (!this.#initialized) {
             let button = this.querySelector(':scope > .accordion-bulk-button');
-            const hasBulkButtonAttr = this.getAttribute('has-bulk-button') === 'true';
-            if (hasBulkButtonAttr) {
+            const attr = this.getAttribute('has-bulk-button');
+            const hasBulkButton = attr === '' || attr === 'true';
+            if (hasBulkButton) {
                 if (!button) {
                     this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
                     button = this.querySelector(':scope > .accordion-bulk-button');
