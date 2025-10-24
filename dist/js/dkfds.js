@@ -6047,7 +6047,8 @@ class FDSAccordionGroup extends HTMLElement {
   #init() {
     if (!this.#initialized) {
       let button = this.querySelector(':scope > .accordion-bulk-button');
-      if (this.hasAttribute('has-bulk-button')) {
+      const hasBulkButtonAttr = this.getAttribute('has-bulk-button') === 'true';
+      if (hasBulkButtonAttr) {
         if (!button) {
           this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
           button = this.querySelector(':scope > .accordion-bulk-button');
@@ -6083,7 +6084,7 @@ class FDSAccordionGroup extends HTMLElement {
       accordions[i].setAttribute('heading-level', headingLevel);
     }
   }
-  #updateHasBulkButton(newValue) {
+  #updateHasBulkButton() {
     const button = this.querySelector(':scope > .accordion-bulk-button');
     if (newValue === 'true' && !button) {
       this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
