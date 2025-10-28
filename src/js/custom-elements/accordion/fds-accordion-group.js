@@ -6,6 +6,7 @@ import { renderAccordionGroupHTML } from './renderAccordionGroupHTML.js'
 class FDSAccordionGroup extends HTMLElement {
 
     #initialized
+    #onBulkClick
 
     /* Private methods */
 
@@ -20,10 +21,10 @@ class FDSAccordionGroup extends HTMLElement {
             button = this.#getBulkButton();
         }
 
-        // Bind once
-        if (button && !button.dataset.fdsBound) {
-            button.addEventListener('click', () => this.toggleAllAccordions());
-            button.dataset.fdsBound = '1';
+        if (button) {
+            // Ensure a single listener
+            button.removeEventListener('click', this.#onBulkClick);
+            button.addEventListener('click', this.#onBulkClick);
         }
 
         return button;
@@ -90,6 +91,7 @@ class FDSAccordionGroup extends HTMLElement {
 
     constructor() {
         super();
+        this.#onBulkClick = () => this.toggleAllAccordions();
     }
 
     /* --------------------------------------------------
