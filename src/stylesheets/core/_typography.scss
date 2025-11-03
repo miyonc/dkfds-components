@@ -2,20 +2,6 @@
 @use "../functions" as func;
 @use "../mixins" as mixins;
 
-html {
-  font-family: vars.$typography-font-family;
-  font-size: vars.$root-font-size;
-}
-
-body {
-  font-size: func.font-size(vars.$typography-base-font-size);
-  background-color: func.color('white');
-  color: func.color('black');
-  text-rendering: optimizeLegibility;
-  @include mixins.font-smoothing;
-  font-kerning: normal;
-}
-
 p {
   line-height: func.units(vars.$typography-base-line-height, 'rem');
   margin-bottom: func.units(3, 'rem');

@@ -13,6 +13,17 @@ fds-accordion,
         background-position-x: 0;
     }
 
+    // Limit layout shifts when the accordions have not yet been rendered
+    &:not(:has(.accordion-button)) {
+        background: func.color(vars.$accordion-button-background-color-default);
+        height: func.units(9, 'rem');
+        border-radius: func.border-radius('medium');
+
+        * {
+            display: none;
+        }
+    }
+
     h1, h2, h3, h4, h5, h6 {
         margin: 0;
         max-width: none;
@@ -82,9 +93,11 @@ fds-accordion,
                 }
 
                 .icon-svg {
+                    height: func.units(vars.$typography-body-text-line-height, 'rem');
+                    width: func.units(vars.$typography-body-text-line-height, 'rem');
+                    vertical-align: bottom;
                     fill: func.color(vars.$accordion-button-color-default);
                     flex-shrink: 0;
-                    vertical-align: bottom;
                 }
 
                 &:hover .icon-svg {

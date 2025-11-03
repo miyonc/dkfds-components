@@ -1,4 +1,67 @@
 @charset "UTF-8";
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:normal;
+  font-weight:400;
+  src:url("../fonts/IBMPlexSans/complete/eot/IBMPlexSans-Regular.eot"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Regular.woff") format("woff"), url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Regular.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/ttf/IBMPlexSans-Regular.ttf") format("truet ype");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:italic;
+  font-weight:400;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Italic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Italic.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:normal;
+  font-weight:500;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Medium.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Medium.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:italic;
+  font-weight:500;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-MediumItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-MediumItalic.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:normal;
+  font-weight:600;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-SemiBold.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-SemiBold.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:italic;
+  font-weight:600;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-SemiBoldItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-SemiBoldItalic.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:normal;
+  font-weight:700;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Bold.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Bold.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:italic;
+  font-weight:700;
+  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-BoldItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-BoldItalic.woff") format("woff");
+  font-display:swap;
+}
+@font-face{
+  font-family:system;
+  src:local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"), local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"), local("Roboto-Light"), local("DroidSans"), local("Tahoma");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
 *,
 *::before,
 *::after{
@@ -181,6 +244,22 @@ sub{
 
 sup{
   top:-0.5em;
+}
+
+html{
+  font-family:"IBM Plex Sans", "system-ui", "system", sans-serif;
+  font-size:62.5%;
+}
+
+body{
+  font-size:1.6rem;
+  background-color:white;
+  color:#1a1a1a;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-feature-settings:"kern";
+  font-kerning:normal;
 }
 
 a:focus,
@@ -1024,22 +1103,6 @@ textarea:focus,
     margin-left:91.6666666667%;
   }
 }
-html{
-  font-family:"IBM Plex Sans", "system-ui", "system", sans-serif;
-  font-size:62.5%;
-}
-
-body{
-  font-size:1.6rem;
-  background-color:white;
-  color:#1a1a1a;
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  font-feature-settings:"kern";
-  font-kerning:normal;
-}
-
 p{
   line-height:2.4rem;
   margin-bottom:0.8rem;
@@ -1474,69 +1537,6 @@ ol:not(.accordion):not(.accordion-bordered):not(.sidenav-list):not(.sidemenu):no
   text-transform:lowercase;
 }
 
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:normal;
-  font-weight:400;
-  src:url("../fonts/IBMPlexSans/complete/eot/IBMPlexSans-Regular.eot"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Regular.woff") format("woff"), url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Regular.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/ttf/IBMPlexSans-Regular.ttf") format("truet ype");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:italic;
-  font-weight:400;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Italic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Italic.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:normal;
-  font-weight:500;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Medium.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Medium.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:italic;
-  font-weight:500;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-MediumItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-MediumItalic.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:normal;
-  font-weight:600;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-SemiBold.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-SemiBold.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:italic;
-  font-weight:600;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-SemiBoldItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-SemiBoldItalic.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:normal;
-  font-weight:700;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-Bold.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-Bold.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:"IBM Plex Sans";
-  font-style:italic;
-  font-weight:700;
-  src:url("../fonts/IBMPlexSans/complete/woff2/IBMPlexSans-BoldItalic.woff2") format("woff2"), url("../fonts/IBMPlexSans/complete/woff/IBMPlexSans-BoldItalic.woff") format("woff");
-  font-display:swap;
-}
-@font-face{
-  font-family:system;
-  src:local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"), local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"), local("Roboto-Light"), local("DroidSans"), local("Tahoma");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap;
-}
 .bg-normal{
   background:white !important;
   background-color:white !important;
@@ -12398,6 +12398,16 @@ fds-accordion[has-error=true] .accordion-button, fds-accordion[has-error=true] .
   background-image:linear-gradient(to right, #CC0000 4px, transparent 4px);
   background-position-x:0;
 }
+fds-accordion:not(:has(.accordion-button)),
+.fds-accordion:not(:has(.accordion-button)){
+  background:#F5F5F5;
+  height:5.6rem;
+  border-radius:8px;
+}
+fds-accordion:not(:has(.accordion-button)) *,
+.fds-accordion:not(:has(.accordion-button)) *{
+  display:none;
+}
 fds-accordion h1, fds-accordion h2, fds-accordion h3, fds-accordion h4, fds-accordion h5, fds-accordion h6,
 .fds-accordion h1,
 .fds-accordion h2,
@@ -12527,9 +12537,11 @@ fds-accordion h1 .accordion-button .accordion-icon .icon-svg, fds-accordion h2 .
 .fds-accordion h4 .accordion-button .accordion-icon .icon-svg,
 .fds-accordion h5 .accordion-button .accordion-icon .icon-svg,
 .fds-accordion h6 .accordion-button .accordion-icon .icon-svg{
+  height:2.4rem;
+  width:2.4rem;
+  vertical-align:bottom;
   fill:#1a1a1a;
   flex-shrink:0;
-  vertical-align:bottom;
 }
 fds-accordion h1 .accordion-button .accordion-icon:hover .icon-svg, fds-accordion h2 .accordion-button .accordion-icon:hover .icon-svg, fds-accordion h3 .accordion-button .accordion-icon:hover .icon-svg, fds-accordion h4 .accordion-button .accordion-icon:hover .icon-svg, fds-accordion h5 .accordion-button .accordion-icon:hover .icon-svg, fds-accordion h6 .accordion-button .accordion-icon:hover .icon-svg,
 .fds-accordion h1 .accordion-button .accordion-icon:hover .icon-svg,

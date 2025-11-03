@@ -2199,7 +2199,7 @@ const datePicker = behavior(datePickerEvents, {
 
 /***/ }),
 
-/***/ 823:
+/***/ 204:
 /***/ (() => {
 
 "use strict";
@@ -2234,7 +2234,7 @@ if (!(HIDDEN in elproto)) {
 __webpack_require__(952);
 
 // polyfills HTMLElement.prototype.hidden
-__webpack_require__(823);
+__webpack_require__(204);
 
 // polyfills Number.isNaN()
 __webpack_require__(259);
@@ -3204,7 +3204,9 @@ __webpack_require__.d(__webpack_exports__, {
   Tooltip: () => (/* reexport */ tooltip),
   datePicker: () => (/* binding */ datePicker),
   init: () => (/* binding */ init),
-  initCustomElements: () => (/* binding */ initCustomElements),
+  registerAccordion: () => (/* reexport */ registerAccordion),
+  registerAccordionGroup: () => (/* reexport */ fds_accordion_group),
+  registerCustomElements: () => (/* binding */ registerCustomElements),
   renderAccordionHTML: () => (/* reexport */ renderAccordionHTML),
   validateAccordionHTML: () => (/* reexport */ validateAccordionHTML)
 });
@@ -5728,11 +5730,9 @@ function renderAccordionHTML() {
   const variantMarkup = variantText && variantIcon ? `
         <span class="accordion-icon">
             <span class="icon_text">${variantText}</span>
-            <svg class="icon-svg" focusable="false" aria-hidden="true">
-                <use href="#${variantIcon}"></use>
-            </svg>
+            <svg class="icon-svg" focusable="false" aria-hidden="true"><use href="#${variantIcon}"></use></svg>
         </span>
-        ` : '';
+        `.trim() : '';
   return `
         <${headingLevel}>
             <button class="accordion-button" aria-expanded="${ariaExpanded}" type="button" aria-controls="${id}">
@@ -5797,6 +5797,8 @@ class FDSAccordion extends HTMLElement {
           headingLevel: (this.getAttribute('heading-level') || 'h3').toLowerCase(),
           expanded: this.isExpanded(),
           contentId: '',
+          variantText: this.getAttribute('variant-text'),
+          variantIcon: this.getAttribute('variant-icon'),
           content: ''
         });
         this.innerHTML = inner;
@@ -5903,10 +5905,7 @@ class FDSAccordion extends HTMLElement {
     if (this.getAttribute('expanded') === null || this.getAttribute('expanded') === 'false') {
       this.setAttribute('expanded', 'true');
     }
-    this.dispatchEvent(new CustomEvent('fds-accordion-expanded', {
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(new Event('fds-accordion-expanded'));
   }
   collapseAccordion() {
     this.#getHeadingElement().querySelector('button.accordion-button').setAttribute('aria-expanded', 'false');
@@ -5914,10 +5913,7 @@ class FDSAccordion extends HTMLElement {
     if (this.hasAttribute('expanded')) {
       this.setAttribute('expanded', 'false');
     }
-    this.dispatchEvent(new CustomEvent('fds-accordion-collapsed', {
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(new Event('fds-accordion-collapsed'));
   }
   toggleAccordion() {
     if (this.isExpanded()) {
@@ -5953,9 +5949,8 @@ class FDSAccordion extends HTMLElement {
         }
         this.#updateContentId(defaultId);
       }
-      if (this.hasAttribute('variant-text') && this.hasAttribute('variant-icon')) {
-        this.#updateVariant(this.getAttribute('variant-text'), this.getAttribute('variant-icon'));
-      }
+
+      // Add event listeners
       this.#getHeadingElement().querySelector('button.accordion-button').addEventListener('click', this.#handleAccordionClick, false);
     }
   }
@@ -6008,99 +6003,28 @@ class FDSAccordion extends HTMLElement {
     }
   }
 }
-/* harmony default export */ const fds_accordion = (FDSAccordion);
-;// ./src/js/custom-elements/accordion/validateAccordionGroupHTML.js
-function validateAccordionGroupHTML(groupElement) {
-  if (!groupElement) return false;
-  const children = Array.from(groupElement.children);
-  if (children.length === 0) return false;
-  let bulkButtonCount = 0;
-  let hasAccordion = false;
-  for (const child of children) {
-    if (child.tagName === 'FDS-ACCORDION') {
-      hasAccordion = true;
-      continue;
-    }
-    if (child.tagName === 'BUTTON' && child.classList.contains('accordion-bulk-button')) {
-      bulkButtonCount++;
-      if (bulkButtonCount > 1) return false;
-      continue;
-    }
-    return false; // Invalid child
+function registerAccordion() {
+  if (customElements.get('fds-accordion') === undefined) {
+    window.customElements.define('fds-accordion', FDSAccordion);
   }
-  return hasAccordion;
 }
-;// ./src/js/custom-elements/accordion/renderAccordionGroupHTML.js
-function renderAccordionGroupHTML() {
-  return `<button class="accordion-bulk-button">Åbn alle</button>`;
-}
+
 ;// ./src/js/custom-elements/accordion/fds-accordion-group.js
 
 
-
-
 class FDSAccordionGroup extends HTMLElement {
-  #initialized;
-  #onBulkClick;
-
   /* Private methods */
 
-  #getBulkButton() {
-    return this.querySelector(':scope > .accordion-bulk-button');
-  }
-  #ensureBulkButton() {
-    let button = this.#getBulkButton();
-    if (!button) {
-      this.insertAdjacentHTML('afterbegin', renderAccordionGroupHTML());
-      button = this.#getBulkButton();
-    }
-    if (button) {
-      // Ensure a single listener
-      button.removeEventListener('click', this.#onBulkClick);
-      button.addEventListener('click', this.#onBulkClick);
-    }
-    return button;
-  }
-  #init() {
-    if (this.#initialized) return;
-    const attr = this.getAttribute('has-bulk-button');
-    const hasBulkButton = attr === '' || attr === 'true';
-    if (hasBulkButton) this.#ensureBulkButton();
-    this.addEventListener('fds-accordion-expanded', () => this.#updateBulkButtonText());
-    this.addEventListener('fds-accordion-collapsed', () => this.#updateBulkButtonText());
-    this.#initialized = true;
-  }
   #updateHeadingLevel(headingLevel) {
-    this.#getAllAccordions().forEach(acc => acc.setAttribute('heading-level', headingLevel));
-  }
-  #getAllAccordions() {
-    return Array.from(this.querySelectorAll(':scope > fds-accordion'));
-  }
-  #areAllExpanded() {
-    return this.#getAllAccordions().every(acc => {
-      const expandedAttr = acc.getAttribute('expanded');
-      if (expandedAttr != null) return expandedAttr === 'true';
-      const button = acc.querySelector('button.accordion-button');
-      return button?.getAttribute('aria-expanded') === 'true';
-    });
-  }
-  #updateBulkButtonText() {
-    const button = this.#getBulkButton();
-    if (!button) return;
-    const openText = this.getAttribute('open-all-text') || 'Åbn alle';
-    const closeText = this.getAttribute('close-all-text') || 'Luk alle';
-    button.textContent = this.#areAllExpanded() ? closeText : openText;
-  }
-  #updateHasBulkButton(attrValue) {
-    const hasBulkButton = attrValue === '' || attrValue === 'true';
-    const button = this.#getBulkButton();
-    if (hasBulkButton) this.#ensureBulkButton();else if (button) button.remove();
-    this.#updateBulkButtonText();
+    const accordions = this.querySelectorAll(':scope > fds-accordion');
+    for (let i = 0; i < accordions.length; i++) {
+      accordions[i].setAttribute('heading-level', headingLevel);
+    }
   }
 
   /* Attributes which can invoke attributeChangedCallback() */
 
-  static observedAttributes = ['heading-level', 'has-bulk-button', 'open-all-text', 'close-all-text'];
+  static observedAttributes = ['heading-level'];
 
   /* --------------------------------------------------
   CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -6108,19 +6032,6 @@ class FDSAccordionGroup extends HTMLElement {
 
   constructor() {
     super();
-    this.#onBulkClick = () => this.toggleAllAccordions();
-  }
-
-  /* --------------------------------------------------
-  CUSTOM ELEMENT METHODS
-  -------------------------------------------------- */
-
-  toggleAllAccordions() {
-    const accordions = this.#getAllAccordions();
-    const shouldExpandAll = !this.#areAllExpanded();
-    const newValue = shouldExpandAll ? 'true' : 'false';
-    accordions.forEach(acc => acc.setAttribute('expanded', newValue));
-    this.#updateBulkButtonText();
   }
 
   /* --------------------------------------------------
@@ -6128,14 +6039,9 @@ class FDSAccordionGroup extends HTMLElement {
   -------------------------------------------------- */
 
   connectedCallback() {
-    if (this.#initialized) return;
-    const isValid = validateAccordionGroupHTML(this);
-    if (!isValid) return;
-    this.#init();
     if (this.hasAttribute('heading-level')) {
       this.#updateHeadingLevel(this.getAttribute('heading-level'));
     }
-    this.#updateBulkButtonText();
   }
 
   /* --------------------------------------------------
@@ -6146,15 +6052,14 @@ class FDSAccordionGroup extends HTMLElement {
     if (attribute === 'heading-level') {
       this.#updateHeadingLevel(newValue);
     }
-    if (attribute === 'has-bulk-button') {
-      this.#updateHasBulkButton(newValue);
-    }
-    if (attribute === 'open-all-text' || attribute === 'close-all-text') {
-      this.#updateBulkButtonText();
-    }
   }
 }
-/* harmony default export */ const fds_accordion_group = (FDSAccordionGroup);
+function registerAccordionGroup() {
+  if (customElements.get('fds-accordion-group') === undefined) {
+    window.customElements.define('fds-accordion-group', FDSAccordionGroup);
+  }
+}
+/* harmony default export */ const fds_accordion_group = (registerAccordionGroup);
 ;// ./src/js/dkfds.js
 
 
@@ -6178,8 +6083,6 @@ class FDSAccordionGroup extends HTMLElement {
 const datePicker = (__webpack_require__(486)/* ["default"] */ .A);
 
 // Custom elements
-
-
 
 
 
@@ -6369,13 +6272,9 @@ var init = function (options) {
     new tooltip(jsSelectorTooltip[c]).init();
   }
 };
-const initCustomElements = () => {
-  if (customElements.get('fds-accordion') === undefined) {
-    window.customElements.define('fds-accordion', fds_accordion);
-  }
-  if (customElements.get('fds-accordion-group') === undefined) {
-    window.customElements.define('fds-accordion-group', fds_accordion_group);
-  }
+const registerCustomElements = () => {
+  registerAccordion();
+  fds_accordion_group();
 };
 
 })();

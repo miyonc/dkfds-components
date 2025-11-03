@@ -19,10 +19,8 @@ import Tooltip from './components/tooltip';
 const datePicker = require('./components/date-picker').default;
 
 // Custom elements
-import FDSAccordion from './custom-elements/accordion/fds-accordion';
-import FDSAccordionGroup from './custom-elements/accordion/fds-accordion-group';
-import { renderAccordionHTML } from './custom-elements/accordion/renderAccordionHTML.js';
-import { validateAccordionHTML } from './custom-elements/accordion/validateAccordionHTML.js'
+import { registerAccordion, renderAccordionHTML, validateAccordionHTML } from './custom-elements/accordion/fds-accordion';
+import registerAccordionGroup from './custom-elements/accordion/fds-accordion-group';
 
 /**
  * The 'polyfills' define key ECMAScript 5 methods that may be missing from
@@ -213,13 +211,9 @@ var init = function (options) {
   }
 };
 
-const initCustomElements = () => {
-  if (customElements.get('fds-accordion') === undefined) {
-    window.customElements.define('fds-accordion', FDSAccordion);
-  }
-  if (customElements.get('fds-accordion-group') === undefined) {
-    window.customElements.define('fds-accordion-group', FDSAccordionGroup);
-  }
+const registerCustomElements = () => {
+  registerAccordion();
+  registerAccordionGroup();
 };
 
-export { init, initCustomElements, renderAccordionHTML, validateAccordionHTML, Accordion, Alert, BackToTop, CharacterLimit, CheckboxToggleContent, Dropdown, DropdownSort, datePicker, ErrorSummary, Modal, Navigation, MenuDropdown, RadioToggleGroup, ResponsiveTable, TableSelectableRows, Tabs, Toast, Tooltip };
+export { init, registerCustomElements, registerAccordion, renderAccordionHTML, validateAccordionHTML, registerAccordionGroup, Accordion, Alert, BackToTop, CharacterLimit, CheckboxToggleContent, Dropdown, DropdownSort, datePicker, ErrorSummary, Modal, Navigation, MenuDropdown, RadioToggleGroup, ResponsiveTable, TableSelectableRows, Tabs, Toast, Tooltip };

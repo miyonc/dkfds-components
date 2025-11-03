@@ -15,11 +15,9 @@ export function renderAccordionHTML({
         ? `
         <span class="accordion-icon">
             <span class="icon_text">${variantText}</span>
-            <svg class="icon-svg" focusable="false" aria-hidden="true">
-                <use href="#${variantIcon}"></use>
-            </svg>
+            <svg class="icon-svg" focusable="false" aria-hidden="true"><use href="#${variantIcon}"></use></svg>
         </span>
-        ` : '';
+        `.trim() : '';
 
     return `
         <${headingLevel}>
