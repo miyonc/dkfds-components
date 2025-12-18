@@ -3213,6 +3213,8 @@ __webpack_require__.d(__webpack_exports__, {
   registerErrorMessage: () => (/* reexport */ fds_error_message),
   registerHelpText: () => (/* reexport */ fds_help_text),
   registerInputWrapper: () => (/* reexport */ fds_input_wrapper),
+  registerRadioButton: () => (/* reexport */ fds_radio_button),
+  registerRadioButtonGroup: () => (/* reexport */ fds_radio_button_group),
   renderAccordionHTML: () => (/* reexport */ renderAccordionHTML),
   validateAccordionHTML: () => (/* reexport */ validateAccordionHTML)
 });
@@ -6727,7 +6729,7 @@ class FDSHelpText extends HTMLElement {
 
     // During disconnect, the custom element may lose connection to the wrapper.
     // Save the wrapper and use it to dispatch events - otherwise, the events may be lost.
-    this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group');
+    this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group, fds-radio-button, fds-radio-button-group');
     this.#parentWrapper?.dispatchEvent(new Event('help-text-callback'));
   }
 
@@ -7613,6 +7615,465 @@ function registerCheckboxGroup() {
   }
 }
 /* harmony default export */ const fds_checkbox_group = (registerCheckboxGroup);
+;// ./src/js/custom-elements/radio-button/fds-radio-button.js
+
+
+
+class FDSRadioButton extends HTMLElement {
+  /* Private instance fields */
+
+  #input;
+  #label;
+  #onInputChange;
+  #handleHelpTextCallback;
+  #handleVisibilityChange;
+
+  /* Private methods */
+
+  #getInputElement() {
+    // Look for input as direct child first, then in wrapper
+    return this.querySelector(':scope > input[type="radio"], :scope > .form-group-radio > input[type="radio"]');
+  }
+  #getLabelElement() {
+    // Look for label as direct child first, then in wrapper  
+    return this.querySelector(':scope > label, :scope > .form-group-radio > label');
+  }
+  #getHelpTextElements() {
+    return this.querySelectorAll(':scope > fds-help-text, :scope > .form-group-radio > fds-help-text');
+  }
+  #setStructure() {
+    if (this.#input && this.#label) {
+      if (this.#input.closest('.form-group-radio')) {
+        return;
+      }
+      const wrapper = document.createElement('div');
+      wrapper.className = "form-group-radio";
+      this.insertBefore(wrapper, this.#input);
+
+      // Ensure input comes before label
+      wrapper.appendChild(this.#input);
+      wrapper.appendChild(this.#label);
+      const helpTextElements = this.#getHelpTextElements();
+      helpTextElements.forEach(helpText => {
+        wrapper.appendChild(helpText);
+      });
+    }
+  }
+
+  // #handleCollapsibleContent() {
+  //     const input = this.#input;
+  //     const possibleContent = this.querySelector(':scope > div.radio-content');
+  //     if (!input || !possibleContent) return;
+
+  //     // Ensure the div has the expected classes
+  //     possibleContent.classList.add('radio-content');
+
+  //     // Set initial collapsed state based on input checked state
+  //     if (!input.checked) {
+  //         possibleContent.classList.add('collapsed');
+  //     }
+
+  //     // Ensure the content has an ID
+  //     if (!possibleContent.id) {
+  //         possibleContent.id = generateAndVerifyUniqueId('exp');
+  //     }
+
+  //     possibleContent.setAttribute('aria-hidden', String(!input.checked));
+  //     input.setAttribute('data-aria-controls', possibleContent.id);
+  //     input.setAttribute('data-aria-expanded', String(input.checked));
+
+  //     this.#onInputChange = () => {
+  //         const expanded = input.checked;
+  //         input.setAttribute('data-aria-expanded', String(expanded));
+  //         possibleContent.setAttribute('aria-hidden', String(!expanded));
+  //         possibleContent.classList.toggle('collapsed', !expanded);
+
+  //         // Dispatch event for group to handle
+  //         this.dispatchEvent(new CustomEvent('radio-changed', {
+  //             detail: { checked: input.checked },
+  //             bubbles: true
+  //         }));
+  //     };
+
+  //     input.addEventListener('change', this.#onInputChange);
+  // }
+
+  #processVisibilityChange(event) {
+    const {
+      detail
+    } = event;
+    const elementId = detail.helptextId;
+    const isHidden = detail.isHidden;
+    const element = this.querySelector(`#${elementId}`);
+    if (element) {
+      element.hiddenStatus = isHidden;
+    }
+    this.handleIdReferences();
+  }
+  #isElementHidden = element => {
+    return element.hiddenStatus !== undefined ? element.hiddenStatus : element.hasAttribute('hidden') && element.getAttribute('hidden') !== 'false';
+  };
+
+  /* Attributes which can invoke attributeChangedCallback() */
+
+  static observedAttributes = [];
+
+  /* Getters and setters */
+
+  get checked() {
+    return this.#input?.checked ?? false;
+  }
+  set checked(value) {
+    if (!this.#input) return;
+    this.#input.checked = Boolean(value);
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
+  -------------------------------------------------- */
+
+  constructor() {
+    super();
+    this.#handleHelpTextCallback = () => {
+      this.handleIdReferences();
+    };
+    this.#handleVisibilityChange = event => {
+      this.#processVisibilityChange(event);
+    };
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT METHODS
+  -------------------------------------------------- */
+
+  handleIdReferences() {
+    if (!this.#input || !this.#label) return;
+    if (!this.#input.id) {
+      this.#input.id = generateAndVerifyUniqueId('rad');
+    }
+    this.#label.htmlFor = this.#input.id;
+    const idsForAriaDescribedby = [];
+
+    // Add help text IDs
+    const helpTexts = this.#getHelpTextElements();
+    helpTexts.forEach(helptext => {
+      if (helptext?.hasAttribute('id')) {
+        const isHidden = this.#isElementHidden(helptext);
+        if (!isHidden) {
+          idsForAriaDescribedby.push(helptext.id);
+        }
+      }
+    });
+
+    // Set or remove aria-describedby
+    if (idsForAriaDescribedby.length > 0) {
+      this.#input.setAttribute('aria-describedby', idsForAriaDescribedby.join(' '));
+    } else {
+      this.#input.removeAttribute('aria-describedby');
+    }
+  }
+  setClasses() {
+    if (!this.#label || !this.#input) return;
+    this.#label.classList.add('form-label');
+    this.#input.classList.add('form-radio');
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT ADDED TO DOCUMENT
+  -------------------------------------------------- */
+
+  connectedCallback() {
+    this.#input = this.#getInputElement();
+    this.#label = this.#getLabelElement();
+    this.#setStructure();
+    this.setClasses();
+    this.handleIdReferences();
+    // this.#handleCollapsibleContent();
+
+    this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
+    this.addEventListener('help-text-visibility-changed', this.#handleVisibilityChange);
+    if (this.#input) {
+      this.#onInputChange = () => {
+        this.dispatchEvent(new CustomEvent('radio-changed', {
+          detail: {
+            checked: this.#input.checked
+          },
+          bubbles: true
+        }));
+      };
+      this.#input.addEventListener('change', this.#onInputChange);
+    }
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT REMOVED FROM DOCUMENT
+  -------------------------------------------------- */
+
+  disconnectedCallback() {
+    this.removeEventListener('help-text-callback', this.#handleHelpTextCallback);
+    this.removeEventListener('help-text-visibility-changed', this.#handleVisibilityChange);
+    if (this.#input) {
+      this.#input.removeEventListener('change', this.#onInputChange);
+    }
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
+  -------------------------------------------------- */
+
+  attributeChangedCallback(attribute, oldValue, newValue) {}
+}
+function registerRadioButton() {
+  if (customElements.get('fds-radio-button') === undefined) {
+    window.customElements.define('fds-radio-button', FDSRadioButton);
+  }
+}
+/* harmony default export */ const fds_radio_button = (registerRadioButton);
+;// ./src/js/custom-elements/radio-button/fds-radio-button-group.js
+
+
+
+class FDSRadioButtonGroup extends HTMLElement {
+  /* Private instance fields */
+
+  #fieldset;
+  #legend;
+  #handleErrorMessageCallback;
+  #handleHelpTextCallback;
+  #handleVisibilityChange;
+
+  /* Private methods */
+
+  #getFieldsetElement() {
+    if (this.#fieldset) return this.#fieldset;
+    this.#fieldset = this.querySelector('fieldset');
+    return this.#fieldset;
+  }
+  #handleLegend() {
+    let legend = this.#fieldset.querySelector('legend') || this.querySelector(':scope > legend');
+    if (legend && legend.parentNode !== this.#fieldset) {
+      legend.remove();
+      this.#fieldset.prepend(legend);
+    } else if (!legend) {
+      legend = document.createElement('legend');
+      this.#fieldset.prepend(legend);
+    }
+    if (!legend.id) {
+      legend.id = generateAndVerifyUniqueId('leg');
+    }
+    legend.classList.add('form-label');
+    return legend;
+  }
+  #getGroupHelpTexts() {
+    const direct = Array.from(this.querySelectorAll(':scope > fds-help-text'));
+    // Help-texts inside a manually written <fieldset>
+    const orphaned = Array.from(this.querySelectorAll(':scope > fieldset > fds-help-text'));
+    return [...direct, ...orphaned];
+  }
+  #getErrorMessages() {
+    const directErrors = Array.from(this.querySelectorAll(':scope > fds-error-message'));
+    const orphanedErrors = Array.from(this.querySelectorAll(':scope > fieldset > fds-error-message'));
+    return [...directErrors, ...orphanedErrors];
+  }
+  #setStructure() {
+    this.#fieldset = this.querySelector('fieldset') || (() => {
+      const fieldset = document.createElement('fieldset');
+      this.prepend(fieldset);
+      return fieldset;
+    })();
+    this.#legend = this.#handleLegend();
+    const helpTexts = this.#getGroupHelpTexts();
+    const errors = this.#getErrorMessages();
+    [...helpTexts, ...errors].forEach(el => el.remove());
+    let insertionPoint = this.#legend.nextSibling;
+    helpTexts.forEach(ht => {
+      this.#fieldset.insertBefore(ht, insertionPoint);
+    });
+    errors.forEach(error => {
+      this.#fieldset.insertBefore(error, insertionPoint);
+    });
+
+    // Move remaining children
+    const toMove = Array.from(this.children).filter(el => el !== this.#fieldset);
+    toMove.forEach(el => this.#fieldset.appendChild(el));
+    return {
+      helpTexts,
+      errors
+    };
+  }
+  #setGroupLabel() {
+    if (this.#legend) {
+      const label = this.getAttribute('group-label');
+      if (label != null) this.#legend.textContent = label;
+    }
+  }
+
+  /* Disabled */
+
+  #shouldHaveDisabled(value) {
+    return value !== null && value !== 'false' && value !== false;
+  }
+  #setDisabled() {
+    this.#getFieldsetElement()?.setAttribute('disabled', '');
+    this.#getFieldsetElement()?.classList.add('disabled');
+  }
+  #removeDisabled() {
+    this.#getFieldsetElement()?.removeAttribute('disabled');
+    this.#getFieldsetElement()?.classList.remove('disabled');
+  }
+  #handleRadioChange = event => {
+    const changedRadioButton = event.target;
+
+    // if (event.detail.checked) {
+    //     this.#uncheckOthers(changedRadioButton);
+    // }
+  };
+
+  // #uncheckOthers(excludeRadio) {
+  //     const allRadios = this.querySelectorAll('fds-radio-button');
+  //     allRadios.forEach(radio => {
+  //         if (radio !== excludeRadio) {
+  //             radio.setChecked(false);
+  //         }
+  //     });
+  // }
+
+  #processVisibilityChange(event) {
+    const {
+      detail
+    } = event;
+
+    // Extract ID and hidden status - works for both error and help-text events
+    const elementId = detail.errorId || detail.helptextId;
+    const isHidden = detail.isHidden;
+    const element = this.querySelector(`#${elementId}`);
+    if (element) {
+      element.hiddenStatus = isHidden;
+    }
+    this.handleIdReferences();
+  }
+  #isElementHidden = element => {
+    return element.hiddenStatus !== undefined ? element.hiddenStatus : element.hasAttribute('hidden') && element.getAttribute('hidden') !== 'false';
+  };
+
+  /* Attributes which can invoke attributeChangedCallback() */
+
+  static observedAttributes = ['group-label', 'group-disabled'];
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
+  -------------------------------------------------- */
+
+  constructor() {
+    super();
+    this.#handleErrorMessageCallback = () => {
+      this.handleIdReferences();
+    };
+    this.#handleHelpTextCallback = () => {
+      this.handleIdReferences();
+    };
+    this.#handleVisibilityChange = event => {
+      this.#processVisibilityChange(event);
+    };
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT METHODS
+  -------------------------------------------------- */
+
+  handleIdReferences() {
+    if (!this.#fieldset) return;
+    if (this.#legend?.id) {
+      this.#fieldset.setAttribute('aria-labelledby', this.#legend.id);
+    }
+    const idsForAriaDescribedby = [];
+
+    // Add help text IDs
+    const helpTexts = this.#getGroupHelpTexts();
+    helpTexts.forEach(helptext => {
+      const text = helptext.querySelector(':scope > .help-text');
+      if (text?.hasAttribute('id')) {
+        const isHidden = this.#isElementHidden(helptext);
+        if (!isHidden) {
+          idsForAriaDescribedby.push(text.id);
+        }
+      }
+    });
+
+    // Add error message IDs
+    let hasError = false;
+    let hasVisibleError = false;
+    const errorMessages = this.#getErrorMessages();
+    errorMessages.forEach(errorText => {
+      if (errorText?.id) {
+        hasError = true;
+        const isHidden = this.#isElementHidden(errorText);
+        if (!isHidden) {
+          idsForAriaDescribedby.push(errorText.id);
+          hasVisibleError = true;
+        }
+      }
+    });
+
+    // Set or remove aria-describedby
+    if (idsForAriaDescribedby.length > 0) {
+      this.#fieldset.setAttribute('aria-describedby', idsForAriaDescribedby.join(' '));
+    } else {
+      this.#fieldset.removeAttribute('aria-describedby');
+    }
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT ADDED TO DOCUMENT
+  -------------------------------------------------- */
+
+  connectedCallback() {
+    const {
+      helpTexts,
+      errors
+    } = this.#setStructure();
+    this.#setGroupLabel();
+    if (this.#shouldHaveDisabled(this.getAttribute('group-disabled'))) this.#setDisabled();
+    this.handleIdReferences();
+    this.addEventListener('radio-changed', this.#handleRadioChange);
+    this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
+    this.addEventListener('error-message-callback', this.#handleErrorMessageCallback);
+    this.addEventListener('error-message-visibility-changed', this.#handleVisibilityChange);
+    this.addEventListener('help-text-visibility-changed', this.#handleVisibilityChange);
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT REMOVED FROM DOCUMENT
+  -------------------------------------------------- */
+
+  disconnectedCallback() {
+    this.removeEventListener('radio-changed', this.#handleRadioChange);
+    this.removeEventListener('help-text-callback', this.#handleHelpTextCallback);
+    this.removeEventListener('error-message-callback', this.#handleErrorMessageCallback);
+    this.removeEventListener('error-message-visibility-changed', this.#handleVisibilityChange);
+    this.removeEventListener('help-text-visibility-changed', this.#handleVisibilityChange);
+  }
+
+  /* --------------------------------------------------
+  CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
+  -------------------------------------------------- */
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (!this.isConnected) return;
+    if (name === 'group-label') {
+      this.#setGroupLabel();
+    }
+    if (name === 'group-disabled' && oldValue !== newValue) {
+      this.#shouldHaveDisabled(newValue) ? this.#setDisabled() : this.#removeDisabled();
+    }
+  }
+}
+function registerRadioButtonGroup() {
+  if (customElements.get('fds-radio-button-group') === undefined) {
+    window.customElements.define('fds-radio-button-group', FDSRadioButtonGroup);
+  }
+}
+/* harmony default export */ const fds_radio_button_group = (registerRadioButtonGroup);
 ;// ./src/js/dkfds.js
 
 
@@ -7636,6 +8097,8 @@ function registerCheckboxGroup() {
 const datePicker = (__webpack_require__(486)/* ["default"] */ .A);
 
 // Custom elements
+
+
 
 
 
@@ -7837,6 +8300,8 @@ const registerCustomElements = () => {
   fds_input_wrapper(), fds_help_text(), fds_character_limit(), fds_error_message();
   fds_checkbox();
   fds_checkbox_group();
+  fds_radio_button();
+  fds_radio_button_group();
 };
 
 })();
