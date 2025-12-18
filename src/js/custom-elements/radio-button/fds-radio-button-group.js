@@ -69,15 +69,11 @@ class FDSRadioButtonGroup extends HTMLElement {
         const helpTexts = this.#getGroupHelpTexts();
         const errors = this.#getErrorMessages();
 
-        [...helpTexts, ...errors].forEach(el => el.remove());
+        helpTexts.forEach(el => el.remove());
 
         let insertionPoint = this.#legend.nextSibling;
         helpTexts.forEach(ht => {
             this.#fieldset.insertBefore(ht, insertionPoint);
-        });
-
-        errors.forEach(error => {
-            this.#fieldset.insertBefore(error, insertionPoint);
         });
 
         // Move remaining children

@@ -25,8 +25,8 @@ fds-checkbox,
     }
 
     fds-help-text {
-        padding-left: 32px;
-        margin-top: -4px;
+        padding-left: calc($checkbox-radio-size + $label-distance);
+        margin-top: -$expand-hit-area;
     }
 
     // Checkbox label/text
@@ -91,12 +91,6 @@ fds-checkbox,
     .form-checkbox:focus+label::before,
     .form-checkbox.focus+label::before {
         @include mixins.focus;
-    }
-
-    // Helptext
-    .form-checkbox+label+.form-hint {
-        padding-left: calc($checkbox-radio-size + $label-distance);
-        margin-top: -$expand-hit-area;
     }
 
     //Expandable content
