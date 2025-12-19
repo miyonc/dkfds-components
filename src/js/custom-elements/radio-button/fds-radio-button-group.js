@@ -175,11 +175,10 @@ class FDSRadioButtonGroup extends HTMLElement {
         // Add help text IDs
         const helpTexts = this.#getGroupHelpTexts();
         helpTexts.forEach(helptext => {
-            const text = helptext.querySelector(':scope > .help-text');
-            if (text?.hasAttribute('id')) {
+            if (helptext?.hasAttribute('id')) {
                 const isHidden = this.#isElementHidden(helptext);
                 if (!isHidden) {
-                    idsForAriaDescribedby.push(text.id);
+                    idsForAriaDescribedby.push(helptext.id);
                 }
             }
         });

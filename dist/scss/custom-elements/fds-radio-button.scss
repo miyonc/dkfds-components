@@ -7,8 +7,7 @@ $checkbox-radio-size: func.units(vars.$input-checkbox-radio-size);
 $label-distance: func.units(vars.$input-checkbox-radio-label-distance);
 $expand-hit-area: func.units(2);
 
-fds-radio-button,
-.fds-checkbox {
+fds-radio-button {
     display: block;
     margin-top: func.units(3);
     position: relative; // Needed for the nested input buttons using absolute position
@@ -148,7 +147,6 @@ fds-radio-button,
             width: $checkbox-radio-size;
             height: $checkbox-radio-size;
 
-            .form-checkbox,
             .form-radio {
                 margin-top: 0;
 

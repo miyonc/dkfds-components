@@ -6653,14 +6653,10 @@ class FDSHelpText extends HTMLElement {
   /* Private instance fields */
 
   #rendered;
-  #helpText;
   #parentWrapper;
 
   /* Private methods */
 
-  #getHelpText() {
-    return this;
-  }
   #render() {
     if (this.#rendered) return;
     this.classList.add('help-text');
@@ -6706,7 +6702,6 @@ class FDSHelpText extends HTMLElement {
   constructor() {
     super();
     this.#rendered = false;
-    this.#helpText = null;
     this.#parentWrapper = null;
   }
 
@@ -6717,9 +6712,8 @@ class FDSHelpText extends HTMLElement {
   connectedCallback() {
     if (this.#rendered) return;
     this.#render();
-    const helpText = this.#getHelpText();
-    if (!helpText.id) {
-      helpText.id = generateAndVerifyUniqueId('help');
+    if (!this.id) {
+      this.id = generateAndVerifyUniqueId('help');
     }
 
     // Handle initial hidden state
@@ -6739,7 +6733,6 @@ class FDSHelpText extends HTMLElement {
 
   disconnectedCallback() {
     this.#parentWrapper?.dispatchEvent(new Event('help-text-callback'));
-    this.#helpText = null;
     this.#parentWrapper = null;
     this.#rendered = false;
   }
@@ -7110,7 +7103,7 @@ class FDSErrorMessage extends HTMLElement {
     }
 
     // Save reference to parent wrapper
-    this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group');
+    this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group, fds-radio-button-group');
     this.#parentWrapper?.dispatchEvent(new Event('error-message-callback'));
   }
 
@@ -7988,11 +7981,10 @@ class FDSRadioButtonGroup extends HTMLElement {
     // Add help text IDs
     const helpTexts = this.#getGroupHelpTexts();
     helpTexts.forEach(helptext => {
-      const text = helptext.querySelector(':scope > .help-text');
-      if (text?.hasAttribute('id')) {
+      if (helptext?.hasAttribute('id')) {
         const isHidden = this.#isElementHidden(helptext);
         if (!isHidden) {
-          idsForAriaDescribedby.push(text.id);
+          idsForAriaDescribedby.push(helptext.id);
         }
       }
     });

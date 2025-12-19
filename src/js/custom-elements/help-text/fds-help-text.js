@@ -7,14 +7,9 @@ class FDSHelpText extends HTMLElement {
     /* Private instance fields */
 
     #rendered;
-    #helpText;
     #parentWrapper;
 
     /* Private methods */
-
-    #getHelpText() {
-        return this;
-    }
 
     #render() {
         if (this.#rendered) return;
@@ -69,7 +64,6 @@ class FDSHelpText extends HTMLElement {
     constructor() {
         super();
         this.#rendered = false;
-        this.#helpText = null;
         this.#parentWrapper = null;
     }
 
@@ -82,9 +76,8 @@ class FDSHelpText extends HTMLElement {
 
         this.#render();
 
-        const helpText = this.#getHelpText();
-        if (!helpText.id) {
-            helpText.id = generateAndVerifyUniqueId('help');
+        if (!this.id) {
+            this.id = generateAndVerifyUniqueId('help');
         }
 
         // Handle initial hidden state
@@ -105,7 +98,6 @@ class FDSHelpText extends HTMLElement {
     disconnectedCallback() {
         this.#parentWrapper?.dispatchEvent(new Event('help-text-callback'));
 
-        this.#helpText = null;
         this.#parentWrapper = null;
         this.#rendered = false;
     }
