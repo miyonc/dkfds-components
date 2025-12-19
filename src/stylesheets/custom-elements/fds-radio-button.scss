@@ -6,6 +6,10 @@
 $checkbox-radio-size: func.units(vars.$input-checkbox-radio-size);
 $label-distance: func.units(vars.$input-checkbox-radio-label-distance);
 $expand-hit-area: func.units(2);
+$button-distance: func.units(3);
+$content-border-width: func.units(2);
+$-checkbox-radio-margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
+$-checkbox-radio-content-margin-top: func.units(2);
 
 fds-radio-button {
     display: block;
@@ -106,38 +110,38 @@ fds-radio-button {
         }
     }
 
-    //Expandable content
-    // .checkbox-content {
-    //     margin-left: calc(($checkbox-radio-size + $content-border-width) / 2);
-    //     padding-left: calc(($checkbox-radio-size + (2 * $label-distance) - $content-border-width) / 2);
-    //     padding-top: func.units(4);
-    //     margin-top: $-checkbox-radio-content-margin-top;
-    //     margin-bottom: func.units(305);
-    //     padding-bottom: func.units(505);
+    Expandable content
+    .radio-content {
+        margin-left: calc(($checkbox-radio-size + $content-border-width) / 2);
+        padding-left: calc(($checkbox-radio-size + (2 * $label-distance) - $content-border-width) / 2);
+        padding-top: func.units(4);
+        margin-top: $-checkbox-radio-content-margin-top;
+        margin-bottom: func.units(305);
+        padding-bottom: func.units(505);
 
-    //     &[aria-hidden="true"] {
-    //         display: none;
-    //     }
-    // }
+        &[aria-hidden="true"] {
+            display: none;
+        }
+    }
 
-    // $-content-wrapper-top-offset: calc($-checkbox-radio-margin-top + $checkbox-radio-size + $expand-hit-area + $-checkbox-radio-content-margin-top);
+    $-content-wrapper-top-offset: calc($-checkbox-radio-margin-top + $checkbox-radio-size + $expand-hit-area + $-checkbox-radio-content-margin-top);
 
-    // &:has(.checkbox-content) {
-    //     margin-top: $button-distance;
-    //     position: relative;
+    &:has(.radio-content) {
+        margin-top: $button-distance;
+        position: relative;
 
-    //     &:has(.checkbox-content[aria-hidden="false"]) {
-    //         &::before {
-    //             content: '';
-    //             position: absolute;
-    //             display: block;
-    //             border-left: $content-border-width solid func.color(vars.$input-checkbox-radio-content-border-color);
-    //             height: calc(100% - $-content-wrapper-top-offset);
-    //             left: calc(($checkbox-radio-size - $content-border-width) / 2);
-    //             top: $-content-wrapper-top-offset;
-    //         }
-    //     }
-    // }
+        &:has(.radio-content[aria-hidden="false"]) {
+            &::before {
+                content: '';
+                position: absolute;
+                display: block;
+                border-left: $content-border-width solid func.color(vars.$input-checkbox-radio-content-border-color);
+                height: calc(100% - $-content-wrapper-top-offset);
+                left: calc(($checkbox-radio-size - $content-border-width) / 2);
+                top: $-content-wrapper-top-offset;
+            }
+        }
+    }
 
     // Special styling when radio/checkboxes are used to select table rows
     .table--selectable th:first-child,

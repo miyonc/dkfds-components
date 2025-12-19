@@ -16,7 +16,7 @@ class FDSRadioButtonGroup extends HTMLElement {
 
     /* Private methods */
 
-     #getFieldsetElement() {
+    #getFieldsetElement() {
         if (this.#fieldset) return this.#fieldset;
 
         this.#fieldset = this.querySelector('fieldset');
@@ -106,23 +106,6 @@ class FDSRadioButtonGroup extends HTMLElement {
         this.#getFieldsetElement()?.classList.remove('disabled');
     }
 
-    #handleRadioChange = (event) => {
-        const changedRadioButton = event.target; 
-        
-        // if (event.detail.checked) {
-        //     this.#uncheckOthers(changedRadioButton);
-        // }
-    }
-    
-    // #uncheckOthers(excludeRadio) {
-    //     const allRadios = this.querySelectorAll('fds-radio-button');
-    //     allRadios.forEach(radio => {
-    //         if (radio !== excludeRadio) {
-    //             radio.setChecked(false);
-    //         }
-    //     });
-    // }
-
     #processVisibilityChange(event) {
         const { detail } = event;
 
@@ -142,6 +125,19 @@ class FDSRadioButtonGroup extends HTMLElement {
             ? element.hiddenStatus
             : (element.hasAttribute('hidden') && element.getAttribute('hidden') !== 'false');
     };
+
+    #handleRadioChange = (event) => {
+        const changedRadioButton = event.target.closest('fds-radio-button');
+
+        if (event.detail.checked) {
+            const allRadios = this.querySelectorAll('fds-radio-button');
+            allRadios.forEach(radio => {
+                if (radio !== changedRadioButton) {
+                    radio.collapseContent?.();
+                }
+            });
+        }
+    }
 
     /* Attributes which can invoke attributeChangedCallback() */
 
@@ -167,8 +163,8 @@ class FDSRadioButtonGroup extends HTMLElement {
         if (!this.#fieldset) return;
 
         if (this.#legend?.id) {
-        this.#fieldset.setAttribute('aria-labelledby', this.#legend.id);
-    }
+            this.#fieldset.setAttribute('aria-labelledby', this.#legend.id);
+        }
 
         const idsForAriaDescribedby = [];
 
@@ -211,12 +207,12 @@ class FDSRadioButtonGroup extends HTMLElement {
     -------------------------------------------------- */
 
     connectedCallback() {
-       const { helpTexts, errors } = this.#setStructure();
+        const { helpTexts, errors } = this.#setStructure();
         this.#setGroupLabel();
         if (this.#shouldHaveDisabled(this.getAttribute('group-disabled'))) this.#setDisabled();
         this.handleIdReferences();
 
-        this.addEventListener('radio-changed', this.#handleRadioChange)
+        this.addEventListener('radio-changed', this.#handleRadioChange);
         this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
         this.addEventListener('error-message-callback', this.#handleErrorMessageCallback);
         this.addEventListener('error-message-visibility-changed', this.#handleVisibilityChange);
@@ -228,7 +224,7 @@ class FDSRadioButtonGroup extends HTMLElement {
     -------------------------------------------------- */
 
     disconnectedCallback() {
-        this.removeEventListener('radio-changed', this.#handleRadioChange)
+        this.removeEventListener('radio-changed', this.#handleRadioChange);
         this.removeEventListener('help-text-callback', this.#handleHelpTextCallback);
         this.removeEventListener('error-message-callback', this.#handleErrorMessageCallback);
         this.removeEventListener('error-message-visibility-changed', this.#handleVisibilityChange);

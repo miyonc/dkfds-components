@@ -13115,6 +13115,30 @@ fds-radio-button .form-radio:disabled + label::before{
   background-color:#F5F5F5;
   border:2px solid #BFBFBF;
 }
+fds-radio-button Expandable content .radio-content{
+  margin-left:14px;
+  padding-left:18px;
+  padding-top:16px;
+  margin-top:4px;
+  margin-bottom:12px;
+  padding-bottom:28px;
+}
+fds-radio-button Expandable content .radio-content[aria-hidden=true]{
+  display:none;
+}
+fds-radio-button:has(.radio-content){
+  margin-top:8px;
+  position:relative;
+}
+fds-radio-button:has(.radio-content):has(.radio-content[aria-hidden=false])::before{
+  content:"";
+  position:absolute;
+  display:block;
+  border-left:4px solid #BFBFBF;
+  height:calc(100% - (1.2rem - 12px + 4px + 24px + 4px + 4px));
+  left:10px;
+  top:calc(1.2rem - 12px + 4px + 24px + 4px + 4px);
+}
 fds-radio-button .table--selectable th:first-child fds-radio-button,
 fds-radio-button .table--selectable td:first-child fds-radio-button{
   margin-top:0;

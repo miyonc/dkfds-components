@@ -12,6 +12,7 @@ class FDSRadioButton extends HTMLElement {
     #onInputChange;
     #handleHelpTextCallback;
     #handleVisibilityChange;
+    #updateExpandableContent;
 
     /* Private methods */
 
@@ -50,43 +51,44 @@ class FDSRadioButton extends HTMLElement {
         }
     }
 
-    // #handleCollapsibleContent() {
-    //     const input = this.#input;
-    //     const possibleContent = this.querySelector(':scope > div.radio-content');
-    //     if (!input || !possibleContent) return;
+    #handleCollapsibleContent() {
+        const input = this.#input;
+        const possibleContent = this.querySelector(':scope > div.radio-content');
+        if (!input || !possibleContent) return;
 
-    //     // Ensure the div has the expected classes
-    //     possibleContent.classList.add('radio-content');
+        // Ensure the div has the expected classes
+        possibleContent.classList.add('radio-content');
 
-    //     // Set initial collapsed state based on input checked state
-    //     if (!input.checked) {
-    //         possibleContent.classList.add('collapsed');
-    //     }
+        // Set initial collapsed state based on input checked state
+        if (!input.checked) {
+            possibleContent.classList.add('collapsed');
+        }
 
-    //     // Ensure the content has an ID
-    //     if (!possibleContent.id) {
-    //         possibleContent.id = generateAndVerifyUniqueId('exp');
-    //     }
+        // Ensure the content has an ID
+        if (!possibleContent.id) {
+            possibleContent.id = generateAndVerifyUniqueId('exp');
+        }
 
-    //     possibleContent.setAttribute('aria-hidden', String(!input.checked));
-    //     input.setAttribute('data-aria-controls', possibleContent.id);
-    //     input.setAttribute('data-aria-expanded', String(input.checked));
+        possibleContent.setAttribute('aria-hidden', String(!input.checked));
+        input.setAttribute('data-aria-controls', possibleContent.id);
+        input.setAttribute('data-aria-expanded', String(input.checked));
 
-    //     this.#onInputChange = () => {
-    //         const expanded = input.checked;
-    //         input.setAttribute('data-aria-expanded', String(expanded));
-    //         possibleContent.setAttribute('aria-hidden', String(!expanded));
-    //         possibleContent.classList.toggle('collapsed', !expanded);
+        this.#updateExpandableContent = () => {
+            const expanded = input.checked;
+            input.setAttribute('data-aria-expanded', String(expanded));
+            possibleContent.setAttribute('aria-hidden', String(!expanded));
+            possibleContent.classList.toggle('collapsed', !expanded);
+        };
+    }
 
-    //         // Dispatch event for group to handle
-    //         this.dispatchEvent(new CustomEvent('radio-changed', {
-    //             detail: { checked: input.checked },
-    //             bubbles: true
-    //         }));
-    //     };
-
-    //     input.addEventListener('change', this.#onInputChange);
-    // }
+    collapseContent() {
+        const content = this.querySelector(':scope > div.radio-content');
+        if (content && this.#input) {
+            this.#input.setAttribute('data-aria-expanded', 'false');
+            content.setAttribute('aria-hidden', 'true');
+            content.classList.add('collapsed');
+        }
+    }
 
     #processVisibilityChange(event) {
         const { detail } = event;
@@ -185,13 +187,17 @@ class FDSRadioButton extends HTMLElement {
         this.#setStructure();
         this.setClasses();
         this.handleIdReferences();
-        // this.#handleCollapsibleContent();
+        this.#handleCollapsibleContent();
 
         this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
         this.addEventListener('help-text-visibility-changed', this.#handleVisibilityChange);
 
         if (this.#input) {
             this.#onInputChange = () => {
+                // Handle expandable content if it exists
+                this.#updateExpandableContent?.();
+
+                // Always dispatch the event
                 this.dispatchEvent(new CustomEvent('radio-changed', {
                     detail: { checked: this.#input.checked },
                     bubbles: true
