@@ -50,7 +50,7 @@ fds-radio-button {
         margin-right: $label-distance;
         height: $checkbox-radio-size;
         width: $checkbox-radio-size;
-        margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
+        margin-top: $-checkbox-radio-margin-top; // Ensure correct placement of input on text zoom
     }
 
     // Unchecked radio button border radius
@@ -78,14 +78,8 @@ fds-radio-button {
             top: calc(($checkbox-radio-size - func.units(vars.$input-radio-dot-size)) / 2);
             background-color: func.color(vars.$input-radio-dot-color);
             border-radius: 100%;
-            margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
+            margin-top: $-checkbox-radio-margin-top; // Ensure correct placement of input on text zoom
         }
-    }
-
-    // Checked radio - radio button 'dot'
-    .form-radio:checked+label::after {
-        background-color: func.color('transparent');
-        border: math.div(func.units(vars.$input-radio-dot-size), 2) solid func.color(vars.$input-radio-dot-color);
     }
 
     // Focus

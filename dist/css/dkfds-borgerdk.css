@@ -13095,10 +13095,6 @@ fds-radio-button .form-radio:checked + label::after{
   border-radius:100%;
   margin-top:calc(1.2rem - 12px + 4px);
 }
-fds-radio-button .form-radio:checked + label::after{
-  background-color:transparent;
-  border:6px solid #1a1a1a;
-}
 fds-radio-button .form-radio:focus + label::before,
 fds-radio-button .form-radio.focus + label::before{
   outline:3px solid #454545;
