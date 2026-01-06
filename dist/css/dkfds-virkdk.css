@@ -13038,6 +13038,10 @@ fds-checkbox-group:has(fieldset > fds-error-message:not([hidden])),
   border-left:4px solid #CC0000;
   padding-left:calc(16px - 4px);
 }
+fds-checkbox-group .tooltip-wrapper,
+.fds-checkbox-group .tooltip-wrapper{
+  margin-left:2px;
+}
 
 fds-radio-button{
   display:block;
@@ -13182,4 +13186,8 @@ fds-radio-button-group:has(fieldset > fds-error-message:not([hidden])) fds-radio
 .form-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio.mixed + label::before{
   border-color:#CC0000;
   border-width:2px;
+}
+fds-radio-button-group .tooltip-wrapper,
+.form-group .tooltip-wrapper{
+  margin-left:2px;
 }

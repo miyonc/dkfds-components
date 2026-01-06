@@ -7418,6 +7418,10 @@ class FDSCheckboxGroup extends HTMLElement {
       this.#fieldset.prepend(legend);
     }
     legend.classList.add('form-label');
+
+    // Move tooltip into the legend
+    const tooltip = this.querySelector(':scope > .tooltip-wrapper');
+    if (tooltip) legend.appendChild(tooltip);
     return legend;
   }
   #getGroupHelpTexts() {
@@ -7458,10 +7462,15 @@ class FDSCheckboxGroup extends HTMLElement {
     };
   }
   #setGroupLabel() {
-    if (this.#legend) {
-      const label = this.getAttribute('group-label');
-      if (label != null) this.#legend.textContent = label;
+    if (!this.#legend) return;
+    const label = this.getAttribute('group-label');
+    if (label == null) return;
+    let textNode = Array.from(this.#legend.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+    if (!textNode) {
+      textNode = document.createTextNode('');
+      this.#legend.prepend(textNode);
     }
+    textNode.nodeValue = label;
   }
 
   /* Disabled */
@@ -7855,6 +7864,10 @@ class FDSRadioButtonGroup extends HTMLElement {
       legend.id = generateAndVerifyUniqueId('leg');
     }
     legend.classList.add('form-label');
+
+    // Move tooltip into the legend
+    const tooltip = this.querySelector(':scope > .tooltip-wrapper');
+    if (tooltip) legend.appendChild(tooltip);
     return legend;
   }
   #getGroupHelpTexts() {
@@ -7892,10 +7905,15 @@ class FDSRadioButtonGroup extends HTMLElement {
     };
   }
   #setGroupLabel() {
-    if (this.#legend) {
-      const label = this.getAttribute('group-label');
-      if (label != null) this.#legend.textContent = label;
+    if (!this.#legend) return;
+    const label = this.getAttribute('group-label');
+    if (label == null) return;
+    let textNode = Array.from(this.#legend.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+    if (!textNode) {
+      textNode = document.createTextNode('');
+      this.#legend.prepend(textNode);
     }
+    textNode.nodeValue = label;
   }
 
   /* Disabled */
