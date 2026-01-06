@@ -10,6 +10,11 @@ $button-distance: func.units(3);
 $content-border-width: func.units(2);
 $-checkbox-radio-margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
 $-checkbox-radio-content-margin-top: func.units(2);
+$input-top-bottom-padding-feedback: calc(8px - #{vars.$input-border-width-feedback});
+$input-left-right-padding-feedback: calc(16px - #{vars.$input-border-width-feedback});
+$error-message-height: func.units(5);
+$error-message-margin: func.units(2);
+$error-space: calc($error-message-height + $error-message-margin);
 
 fds-checkbox,
 .fds-checkbox {
@@ -20,8 +25,9 @@ fds-checkbox,
     &:has(> fds-error-message:not([hidden]), > .form-group-checkbox ~ fds-error-message:not([hidden])),
     &:has(> .fds-error-message:not([hidden]),
         >.form-group-checkbox~.fds-error-message) {
-        border-left: vars.$form-group-error-border-width solid func.color(vars.$form-group-error-border-color);
-        padding-left: calc(#{func.units(4)} - 4px);
+        .form-checkbox+label::before {
+            border: vars.$input-border-width-feedback solid func.color(vars.$input-border-color-feedback-error);
+        }
     }
 
     fds-help-text {
@@ -128,6 +134,12 @@ fds-checkbox,
                 height: calc(100% - $-content-wrapper-top-offset);
                 left: calc(($checkbox-radio-size - $content-border-width) / 2);
                 top: $-content-wrapper-top-offset;
+            }
+        }
+
+        &:has(> fds-error-message:not([hidden]), > .form-group-checkbox ~ fds-error-message:not([hidden])) {
+            &::before {
+                height: calc(100% - $-content-wrapper-top-offset - #{$error-space});
             }
         }
     }

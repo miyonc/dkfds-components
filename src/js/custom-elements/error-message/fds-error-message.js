@@ -22,15 +22,25 @@ class FDSErrorMessage extends HTMLElement {
             }
 
             const sr = document.createElement('span');
-            sr.className = 'sr-only';
+            sr.classList.add('sr-only');
             sr.textContent = `${this.#srOnlyText}: `;
 
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.classList.add('icon-svg', 'alert-icon');
+            svg.setAttribute('aria-label', 'Fejl');
+            svg.setAttribute('focusable', 'false');
+
+            const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+            use.setAttribute('href', '#error');
+            svg.appendChild(use);
+
             const visibleMessage = document.createElement('span');
-            visibleMessage.className = 'visible-message';
+            visibleMessage.classList.add('visible-message');
             visibleMessage.textContent = this.textContent;
             this.textContent = '';
 
             this.appendChild(sr);
+            this.appendChild(svg);
             this.appendChild(visibleMessage);
         }
 

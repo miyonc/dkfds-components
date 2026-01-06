@@ -62,15 +62,11 @@ class FDSCheckboxGroup extends HTMLElement {
         const helpTexts = this.#getGroupHelpTexts();
         const errors = this.#getErrorMessages();
 
-        [...helpTexts, ...errors].forEach(el => el.remove());
+        helpTexts.forEach(el => el.remove());
 
         let insertionPoint = this.#legend.nextSibling;
         helpTexts.forEach(ht => {
             this.#fieldset.insertBefore(ht, insertionPoint);
-        });
-
-        errors.forEach(error => {
-            this.#fieldset.insertBefore(error, insertionPoint);
         });
 
         // Move remaining children
@@ -151,11 +147,10 @@ class FDSCheckboxGroup extends HTMLElement {
         // Add help text IDs
         const helpTexts = this.#getGroupHelpTexts();
         helpTexts.forEach(helptext => {
-            const text = helptext.querySelector(':scope > .help-text');
-            if (text?.hasAttribute('id')) {
+            if (helptext?.hasAttribute('id')) {
                 const isHidden = this.#isElementHidden(helptext);
                 if (!isHidden) {
-                    idsForAriaDescribedby.push(text.id);
+                    idsForAriaDescribedby.push(helptext.id);
                 }
             }
         });
