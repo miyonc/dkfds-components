@@ -218,14 +218,6 @@ class FDSRadioButton extends HTMLElement {
             this.#input.removeEventListener('change', this.#onInputChange);
         }
     }
-
-    /* --------------------------------------------------
-    CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
-    -------------------------------------------------- */
-
-    attributeChangedCallback(attribute, oldValue, newValue) {
-
-    }
 }
 
 function registerRadioButton() {
