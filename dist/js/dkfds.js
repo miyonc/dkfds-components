@@ -7041,13 +7041,21 @@ class FDSErrorMessage extends HTMLElement {
         this.#srOnlyText = srText;
       }
       const sr = document.createElement('span');
-      sr.className = 'sr-only';
+      sr.classList.add('sr-only');
       sr.textContent = `${this.#srOnlyText}: `;
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.classList.add('icon-svg', 'alert-icon');
+      svg.setAttribute('aria-label', 'Fejl');
+      svg.setAttribute('focusable', 'false');
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#error');
+      svg.appendChild(use);
       const visibleMessage = document.createElement('span');
-      visibleMessage.className = 'visible-message';
+      visibleMessage.classList.add('visible-message');
       visibleMessage.textContent = this.textContent;
       this.textContent = '';
       this.appendChild(sr);
+      this.appendChild(svg);
       this.appendChild(visibleMessage);
     }
     this.#rendered = true;
@@ -7303,11 +7311,10 @@ class FDSCheckbox extends HTMLElement {
     // Add help text IDs
     const helpTexts = this.#getHelpTextElements();
     helpTexts.forEach(helptext => {
-      const text = helptext.querySelector(':scope > .help-text');
-      if (text?.hasAttribute('id')) {
+      if (helptext.hasAttribute('id')) {
         const isHidden = this.#isElementHidden(helptext);
         if (!isHidden) {
-          idsForAriaDescribedby.push(text.id);
+          idsForAriaDescribedby.push(helptext.id);
         }
       }
     });
@@ -7444,13 +7451,10 @@ class FDSCheckboxGroup extends HTMLElement {
     this.#legend = this.#handleLegend();
     const helpTexts = this.#getGroupHelpTexts();
     const errors = this.#getErrorMessages();
-    [...helpTexts, ...errors].forEach(el => el.remove());
+    helpTexts.forEach(el => el.remove());
     let insertionPoint = this.#legend.nextSibling;
     helpTexts.forEach(ht => {
       this.#fieldset.insertBefore(ht, insertionPoint);
-    });
-    errors.forEach(error => {
-      this.#fieldset.insertBefore(error, insertionPoint);
     });
 
     // Move remaining children
@@ -7536,11 +7540,10 @@ class FDSCheckboxGroup extends HTMLElement {
     // Add help text IDs
     const helpTexts = this.#getGroupHelpTexts();
     helpTexts.forEach(helptext => {
-      const text = helptext.querySelector(':scope > .help-text');
-      if (text?.hasAttribute('id')) {
+      if (helptext?.hasAttribute('id')) {
         const isHidden = this.#isElementHidden(helptext);
         if (!isHidden) {
-          idsForAriaDescribedby.push(text.id);
+          idsForAriaDescribedby.push(helptext.id);
         }
       }
     });

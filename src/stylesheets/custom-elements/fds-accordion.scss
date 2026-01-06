@@ -7,11 +7,10 @@ fds-accordion,
     display: block;
     margin-bottom: func.units(3, 'rem');
 
-    &[has-error="true"] .accordion-button,
-    &[has-error="true"] .accordion-content {
-        background-image: linear-gradient(to right, func.color(vars.$accordion-button-error-border-color) 4px, transparent 4px);
-        background-position-x: 0;
-    }
+    &[has-error="true"] {
+    border: 2px solid func.color(vars.$accordion-button-error-border-color);
+    border-radius: func.border-radius('medium');
+}
 
     // Limit layout shifts when the accordions have not yet been rendered
     &:not(:has(.accordion-button)) {

@@ -4,11 +4,16 @@
 
 fds-error-message,
 .fds-error-message {
-    @include mixins.form-label-text;
+    @include mixins.body-copy-text;
     display: block;
     color: func.color('error');
     margin-top: func.units(2);
     max-width: vars.$typography-text-max-width;
+
+    .icon-svg.alert-icon {
+        margin-right: func.units(3);
+        vertical-align: bottom;
+    }
 
     //Hidden errors
     &[aria-hidden="true"] {

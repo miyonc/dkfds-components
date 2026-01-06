@@ -14,13 +14,23 @@ fds-checkbox-group,
     }
 
     // Spacing for direct children inside the group.
-    & > ::slotted(*) + ::slotted(fds-checkbox) {
+    &> ::slotted(*)+ ::slotted(fds-checkbox) {
         margin-top: $button-distance;
     }
 
     &:has(fieldset > fds-error-message:not([hidden])) {
-        border-left: vars.$form-group-error-border-width solid func.color(vars.$form-group-error-border-color);
-        padding-left: calc(#{func.units(4)} - #{vars.$form-group-error-border-width});
+
+        fds-checkbox,
+        .fds-checkbox {
+
+            .form-checkbox+label::before,
+            .form-checkbox:checked+label::before,
+            .form-checkbox[aria-checked="mixed"]+label::before,
+            .form-checkbox.mixed+label::before {
+                border-color: func.color(vars.$input-border-color-feedback-error);
+                border-width: vars.$input-border-width-feedback;
+            }
+        }
     }
 
     .tooltip-wrapper {
