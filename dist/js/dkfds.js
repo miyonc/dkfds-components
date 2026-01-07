@@ -7035,22 +7035,19 @@ class FDSErrorMessage extends HTMLElement {
   /* Private instance fields */
 
   #rendered;
-  #srOnlyText;
+  #iconText;
   #parentWrapper;
   #render() {
     if (this.#rendered) return;
     const hasElements = this.children.length > 0;
     if (!hasElements) {
-      const srText = this.getAttribute('sr-text');
-      if (srText !== null && srText !== '') {
-        this.#srOnlyText = srText;
+      const iconText = this.getAttribute('icon-text');
+      if (iconText !== null && iconText !== '') {
+        this.#iconText = iconText;
       }
-      const sr = document.createElement('span');
-      sr.classList.add('sr-only');
-      sr.textContent = `${this.#srOnlyText}: `;
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.classList.add('icon-svg', 'alert-icon');
-      svg.setAttribute('aria-label', 'Fejl');
+      svg.setAttribute('aria-label', this.#iconText);
       svg.setAttribute('focusable', 'false');
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', '#error');
@@ -7059,7 +7056,6 @@ class FDSErrorMessage extends HTMLElement {
       visibleMessage.classList.add('visible-message');
       visibleMessage.textContent = this.textContent;
       this.textContent = '';
-      this.appendChild(sr);
       this.appendChild(svg);
       this.appendChild(visibleMessage);
     }
@@ -7086,7 +7082,7 @@ class FDSErrorMessage extends HTMLElement {
 
   /* Attributes which can invoke attributeChangedCallback() */
 
-  static observedAttributes = ['id', 'sr-text', 'hidden'];
+  static observedAttributes = ['id', 'icon-text', 'hidden'];
 
   /* --------------------------------------------------
   CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -7095,7 +7091,7 @@ class FDSErrorMessage extends HTMLElement {
   constructor() {
     super();
     this.#rendered = false;
-    this.#srOnlyText = 'Fejl';
+    this.#iconText = 'Fejl';
     this.#parentWrapper = null;
   }
 
@@ -7136,9 +7132,9 @@ class FDSErrorMessage extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (!this.#rendered) return;
-    if (name === 'sr-text') {
-      this.#srOnlyText = newValue;
-      this.querySelector(':scope > .sr-only').textContent = this.#srOnlyText;
+    if (name === 'icon-text') {
+      this.#iconText = newValue;
+      this.querySelector(':scope > .alert-icon').setAttribute('aria-label', this.#iconText);
     }
     if (name === 'hidden' && oldValue !== newValue) {
       if (this.#shouldBeHidden(newValue)) {

@@ -7,7 +7,7 @@ fds-error-message,
     @include mixins.body-copy-text;
     display: block;
     color: func.color('error');
-    margin-top: func.units(2);
+    margin-top: func.units(3);
     max-width: vars.$typography-text-max-width;
 
     .icon-svg.alert-icon {
