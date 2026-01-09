@@ -12956,11 +12956,6 @@ fds-checkbox .form-checkbox.focus + label::before,
   outline:3px solid #454545;
   outline-offset:1px;
 }
-fds-checkbox .form-checkbox + label + .form-hint,
-.fds-checkbox .form-checkbox + label + .form-hint{
-  padding-left:32px;
-  margin-top:-4px;
-}
 fds-checkbox .checkbox-content,
 .fds-checkbox .checkbox-content{
   margin-left:14px;
@@ -13002,44 +12997,28 @@ fds-checkbox .table--selectable td:first-child fds-checkbox,
   height:24px;
 }
 fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox,
-fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio,
 fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox,
-fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio,
 .fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox,
-.fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio{
+.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox{
   margin-top:0;
 }
 fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label,
-fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label,
 fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label,
-fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label,
 .fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label,
-.fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label{
+.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label{
   padding-left:0;
 }
 fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label::before,
-fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label::before,
 fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::before,
-fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label::before,
 .fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label::before,
-.fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label::before,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::before,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label::before{
+.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::before{
   margin-right:0;
   margin-top:calc(1.2rem - 12px);
 }
 fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label::after,
-fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label::after,
 fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::after,
-fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label::after,
 .fds-checkbox .table--selectable th:first-child fds-checkbox .form-checkbox + label::after,
-.fds-checkbox .table--selectable th:first-child fds-checkbox .form-radio + label::after,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::after,
-.fds-checkbox .table--selectable td:first-child fds-checkbox .form-radio + label::after{
+.fds-checkbox .table--selectable td:first-child fds-checkbox .form-checkbox + label::after{
   margin-top:calc(1.2rem - 12px);
 }
 
@@ -13074,4 +13053,157 @@ fds-checkbox-group:has(fieldset > fds-error-message:not([hidden])) .fds-checkbox
 .fds-checkbox-group:has(fieldset > fds-error-message:not([hidden])) .fds-checkbox .form-checkbox.mixed + label::before{
   border-color:#CC0000;
   border-width:2px;
+}
+fds-checkbox-group .tooltip-wrapper,
+.fds-checkbox-group .tooltip-wrapper{
+  margin-left:2px;
+}
+
+fds-radio-button{
+  display:block;
+  margin-top:8px;
+  position:relative;
+}
+fds-radio-button fds-help-text{
+  padding-left:32px;
+  margin-top:-4px;
+}
+fds-radio-button .form-radio + label{
+  max-width:66ch;
+}
+fds-radio-button .form-radio + label{
+  cursor:pointer;
+  font-weight:400;
+  line-height:2.4rem;
+  display:inline-block;
+  outline:none;
+  color:#1a1a1a;
+  padding-left:32px;
+  padding-top:4px;
+  padding-bottom:4px;
+}
+fds-radio-button .form-radio + label::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  box-sizing:border-box;
+  display:inherit;
+  background-color:white;
+  border:2px solid #1a1a1a;
+  margin-right:8px;
+  height:24px;
+  width:24px;
+  margin-top:calc(1.2rem - 12px + 4px);
+}
+fds-radio-button .form-radio + label::before{
+  border-radius:100%;
+}
+fds-radio-button .form-radio:checked + label::before{
+  background-color:white;
+  border:2px solid #1a1a1a;
+}
+fds-radio-button .form-radio:checked + label::after{
+  content:"";
+  position:absolute;
+  display:inherit;
+  height:12px;
+  width:12px;
+  left:6px;
+  top:6px;
+  background-color:#1a1a1a;
+  border-radius:100%;
+  margin-top:calc(1.2rem - 12px + 4px);
+}
+fds-radio-button .form-radio:focus + label::before,
+fds-radio-button .form-radio.focus + label::before{
+  outline:3px solid #454545;
+  outline-offset:1px;
+}
+fds-radio-button .form-radio:disabled{
+  cursor:not-allowed;
+}
+fds-radio-button .form-radio:disabled + label{
+  cursor:not-allowed;
+  color:#707070;
+}
+fds-radio-button .form-radio:disabled + label::before{
+  background-color:#F5F5F5;
+  border:2px solid #BFBFBF;
+}
+fds-radio-button Expandable content .radio-content{
+  margin-left:14px;
+  padding-left:18px;
+  padding-top:16px;
+  margin-top:4px;
+  margin-bottom:12px;
+  padding-bottom:28px;
+}
+fds-radio-button Expandable content .radio-content[aria-hidden=true]{
+  display:none;
+}
+fds-radio-button:has(.radio-content){
+  margin-top:8px;
+  position:relative;
+}
+fds-radio-button:has(.radio-content):has(.radio-content[aria-hidden=false])::before{
+  content:"";
+  position:absolute;
+  display:block;
+  border-left:4px solid #BFBFBF;
+  height:calc(100% - (1.2rem - 12px + 4px + 24px + 4px + 4px));
+  left:10px;
+  top:calc(1.2rem - 12px + 4px + 24px + 4px + 4px);
+}
+fds-radio-button .table--selectable th:first-child fds-radio-button,
+fds-radio-button .table--selectable td:first-child fds-radio-button{
+  margin-top:0;
+  width:24px;
+  height:24px;
+}
+fds-radio-button .table--selectable th:first-child fds-radio-button .form-radio,
+fds-radio-button .table--selectable td:first-child fds-radio-button .form-radio{
+  margin-top:0;
+}
+fds-radio-button .table--selectable th:first-child fds-radio-button .form-radio + label,
+fds-radio-button .table--selectable td:first-child fds-radio-button .form-radio + label{
+  padding-left:0;
+}
+fds-radio-button .table--selectable th:first-child fds-radio-button .form-radio + label::before,
+fds-radio-button .table--selectable td:first-child fds-radio-button .form-radio + label::before{
+  margin-right:0;
+  margin-top:calc(1.2rem - 12px);
+}
+fds-radio-button .table--selectable th:first-child fds-radio-button .form-radio + label::after,
+fds-radio-button .table--selectable td:first-child fds-radio-button .form-radio + label::after{
+  margin-top:calc(1.2rem - 12px);
+}
+
+fds-radio-button-group,
+.form-group{
+  display:block;
+  margin-top:24px;
+}
+fds-radio-button-group:first-child,
+.form-group:first-child{
+  margin-top:0;
+}
+fds-radio-button-group > ::slotted(*) + ::slotted(fds-radio-button),
+.form-group > ::slotted(*) + ::slotted(fds-radio-button){
+  margin-top:8px;
+}
+fds-radio-button-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio + label::before,
+fds-radio-button-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio:checked + label::before,
+fds-radio-button-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio[aria-checked=mixed] + label::before,
+fds-radio-button-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio.mixed + label::before,
+.form-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio + label::before,
+.form-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio:checked + label::before,
+.form-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio[aria-checked=mixed] + label::before,
+.form-group:has(fieldset > fds-error-message:not([hidden])) fds-radio-button .form-radio.mixed + label::before{
+  border-color:#CC0000;
+  border-width:2px;
+}
+fds-radio-button-group .tooltip-wrapper,
+.form-group .tooltip-wrapper{
+  margin-left:2px;
 }

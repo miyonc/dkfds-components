@@ -1,6 +1,8 @@
 'use strict';
 
-class FDSCheckboxGroup extends HTMLElement {
+import { generateAndVerifyUniqueId } from '../../utils/generate-unique-id';
+
+class FDSRadioButtonGroup extends HTMLElement {
 
     /* Private instance fields */
 
@@ -10,6 +12,7 @@ class FDSCheckboxGroup extends HTMLElement {
     #handleErrorMessageCallback;
     #handleHelpTextCallback;
     #handleVisibilityChange;
+
 
     /* Private methods */
 
@@ -29,6 +32,10 @@ class FDSCheckboxGroup extends HTMLElement {
         } else if (!legend) {
             legend = document.createElement('legend');
             this.#fieldset.prepend(legend);
+        }
+
+        if (!legend.id) {
+            legend.id = generateAndVerifyUniqueId('leg');
         }
 
         legend.classList.add('form-label');
@@ -134,6 +141,19 @@ class FDSCheckboxGroup extends HTMLElement {
             : (element.hasAttribute('hidden') && element.getAttribute('hidden') !== 'false');
     };
 
+    #handleRadioChange = (event) => {
+        const changedRadioButton = event.target.closest('fds-radio-button');
+
+        if (event.detail.checked) {
+            const allRadios = this.querySelectorAll('fds-radio-button');
+            allRadios.forEach(radio => {
+                if (radio !== changedRadioButton) {
+                    radio.collapseContent?.();
+                }
+            });
+        }
+    }
+
     /* Attributes which can invoke attributeChangedCallback() */
 
     static observedAttributes = ['group-label', 'group-disabled'];
@@ -156,6 +176,10 @@ class FDSCheckboxGroup extends HTMLElement {
 
     handleIdReferences() {
         if (!this.#fieldset) return;
+
+        if (this.#legend?.id) {
+            this.#fieldset.setAttribute('aria-labelledby', this.#legend.id);
+        }
 
         const idsForAriaDescribedby = [];
 
@@ -194,8 +218,8 @@ class FDSCheckboxGroup extends HTMLElement {
     }
 
     /* --------------------------------------------------
-CUSTOM ELEMENT ADDED TO DOCUMENT
--------------------------------------------------- */
+    CUSTOM ELEMENT ADDED TO DOCUMENT
+    -------------------------------------------------- */
 
     connectedCallback() {
         const { helpTexts, errors } = this.#setStructure();
@@ -203,6 +227,7 @@ CUSTOM ELEMENT ADDED TO DOCUMENT
         if (this.#shouldHaveDisabled(this.getAttribute('group-disabled'))) this.#setDisabled();
         this.handleIdReferences();
 
+        this.addEventListener('radio-changed', this.#handleRadioChange);
         this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
         this.addEventListener('error-message-callback', this.#handleErrorMessageCallback);
         this.addEventListener('error-message-visibility-changed', this.#handleVisibilityChange);
@@ -214,6 +239,7 @@ CUSTOM ELEMENT ADDED TO DOCUMENT
     -------------------------------------------------- */
 
     disconnectedCallback() {
+        this.removeEventListener('radio-changed', this.#handleRadioChange);
         this.removeEventListener('help-text-callback', this.#handleHelpTextCallback);
         this.removeEventListener('error-message-callback', this.#handleErrorMessageCallback);
         this.removeEventListener('error-message-visibility-changed', this.#handleVisibilityChange);
@@ -221,8 +247,8 @@ CUSTOM ELEMENT ADDED TO DOCUMENT
     }
 
     /* --------------------------------------------------
-CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
--------------------------------------------------- */
+    CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
+    -------------------------------------------------- */
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (!this.isConnected) return;
@@ -237,10 +263,10 @@ CUSTOM ELEMENT'S ATTRIBUTE(S) CHANGED
     }
 }
 
-function registerCheckboxGroup() {
-    if (!customElements.get('fds-checkbox-group')) {
-        customElements.define('fds-checkbox-group', FDSCheckboxGroup);
+function registerRadioButtonGroup() {
+    if (customElements.get('fds-radio-button-group') === undefined) {
+        window.customElements.define('fds-radio-button-group', FDSRadioButtonGroup);
     }
 }
 
-export default registerCheckboxGroup;
+export default registerRadioButtonGroup;

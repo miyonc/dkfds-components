@@ -4,29 +4,28 @@
 
 $button-distance: func.units(3);
 
-fds-checkbox-group,
-.fds-checkbox-group {
+
+fds-radio-button-group,
+.form-group {
     display: block;
-    margin-top: func.units(5);
+    margin-top: func.units(5); // 4
 
     &:first-child {
         margin-top: 0;
     }
 
     // Spacing for direct children inside the group.
-    &> ::slotted(*)+ ::slotted(fds-checkbox) {
+    &> ::slotted(*)+ ::slotted(fds-radio-button) {
         margin-top: $button-distance;
     }
 
     &:has(fieldset > fds-error-message:not([hidden])) {
 
-        fds-checkbox,
-        .fds-checkbox {
-
-            .form-checkbox+label::before,
-            .form-checkbox:checked+label::before,
-            .form-checkbox[aria-checked="mixed"]+label::before,
-            .form-checkbox.mixed+label::before {
+        fds-radio-button {
+            .form-radio+label::before,
+            .form-radio:checked+label::before,
+            .form-radio[aria-checked="mixed"]+label::before,
+            .form-radio.mixed+label::before {
                 border-color: func.color(vars.$input-border-color-feedback-error);
                 border-width: vars.$input-border-width-feedback;
             }

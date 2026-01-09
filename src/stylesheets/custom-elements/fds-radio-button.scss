@@ -1,42 +1,32 @@
 @use "../variables" as vars;
+@use "sass:math" as math;
 @use "../functions" as func;
 @use "../mixins" as mixins;
 
 $checkbox-radio-size: func.units(vars.$input-checkbox-radio-size);
 $label-distance: func.units(vars.$input-checkbox-radio-label-distance);
-$checkmark-size: func.units(vars.$input-checkbox-checkmark-size);
 $expand-hit-area: func.units(2);
 $button-distance: func.units(3);
 $content-border-width: func.units(2);
 $-checkbox-radio-margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
 $-checkbox-radio-content-margin-top: func.units(2);
-$input-top-bottom-padding-feedback: calc(8px - #{vars.$input-border-width-feedback});
-$input-left-right-padding-feedback: calc(16px - #{vars.$input-border-width-feedback});
-$error-message-height: func.units(5);
-$error-message-margin: func.units(2);
-$error-space: calc($error-message-height + $error-message-margin);
 
-fds-checkbox,
-.fds-checkbox {
+fds-radio-button {
     display: block;
     margin-top: func.units(3);
     position: relative; // Needed for the nested input buttons using absolute position
-
-    &:has(> fds-error-message:not([hidden]), > .form-group-checkbox ~ fds-error-message:not([hidden])),
-    &:has(> .fds-error-message:not([hidden]),
-        >.form-group-checkbox~.fds-error-message) {
-        .form-checkbox+label::before {
-            border: vars.$input-border-width-feedback solid func.color(vars.$input-border-color-feedback-error);
-        }
-    }
 
     fds-help-text {
         padding-left: calc($checkbox-radio-size + $label-distance);
         margin-top: -$expand-hit-area;
     }
 
+    .form-radio+label {
+        max-width: vars.$typography-text-max-width;
+    }
+
     // Checkbox label/text
-    .form-checkbox+label {
+    .form-radio+label {
         cursor: pointer;
         font-weight: func.font-weight(vars.$input-checkbox-radio-label-font-weight);
         line-height: func.units(vars.$input-checkbox-radio-size, 'rem');
@@ -48,14 +38,7 @@ fds-checkbox,
         padding-bottom: $expand-hit-area;
     }
 
-    .form-checkbox+label+.tooltip-wrapper {
-        margin-top: $expand-hit-area;
-        margin-bottom: $expand-hit-area;
-        margin-left: func.units(1);
-    }
-
-    // Unchecked checkbox button
-    .form-checkbox+label::before {
+    .form-radio+label::before {
         content: '';
         position: absolute;
         left: 0;
@@ -67,40 +50,62 @@ fds-checkbox,
         margin-right: $label-distance;
         height: $checkbox-radio-size;
         width: $checkbox-radio-size;
-        margin-top: calc((func.units(vars.$input-checkbox-radio-size, 'rem') / 2) - ($checkbox-radio-size / 2) + $expand-hit-area); // Ensure correct placement of input on text zoom
-        border-radius: func.border-radius('small');
+        margin-top: $-checkbox-radio-margin-top; // Ensure correct placement of input on text zoom
     }
 
-    // Checked checkbox
-    .form-checkbox:checked+label::before,
-    .form-checkbox[aria-checked="mixed"]+label::before,
-    .form-checkbox.mixed+label::before {
-        background-color: func.color(vars.$input-checkbox-checked-background-color);
-        border: 2px solid func.color(vars.$input-checkbox-checked-border-color);
-        background-size: $checkmark-size;
-        background-repeat: no-repeat;
-        background-position: center;
+    // Unchecked radio button border radius
+    .form-radio+label::before {
+        border-radius: 100%;
     }
 
-    // 'Normal' checkbox checkmark
-    .form-checkbox:checked+label::before {
-        background-image: url(vars.$icons-folder-path + vars.$input-checkbox-checked-image + '.svg');
-    }
+    // Checked radio
+    .form-radio:checked+label {
 
-    // 'Mixed' checkbox checkmark
-    .form-checkbox[aria-checked="mixed"]+label::before,
-    .form-checkbox.mixed+label::before {
-        background-image: url(vars.$icons-folder-path + vars.$input-checkbox-mixed-image + '.svg');
+        // Radio button background
+        &::before {
+            background-color: func.color(vars.$input-radio-checked-background-color);
+            border: 2px solid func.color(vars.$input-radio-checked-border-color);
+        }
+
+        // Radio button 'dot'
+        &::after {
+            content: "";
+            position: absolute;
+            display: inherit;
+            height: func.units(vars.$input-radio-dot-size);
+            width: func.units(vars.$input-radio-dot-size);
+            left: calc(($checkbox-radio-size - func.units(vars.$input-radio-dot-size)) / 2);
+            top: calc(($checkbox-radio-size - func.units(vars.$input-radio-dot-size)) / 2);
+            background-color: func.color(vars.$input-radio-dot-color);
+            border-radius: 100%;
+            margin-top: $-checkbox-radio-margin-top; // Ensure correct placement of input on text zoom
+        }
     }
 
     // Focus
-    .form-checkbox:focus+label::before,
-    .form-checkbox.focus+label::before {
+    .form-radio:focus+label::before,
+    .form-radio.focus+label::before {
         @include mixins.focus;
     }
 
-    //Expandable content
-    .checkbox-content {
+    // Disabled
+    .form-radio:disabled {
+        cursor: not-allowed;
+    }
+
+    // Disabled label and button
+    .form-radio:disabled+label {
+        cursor: not-allowed;
+        color: func.color(vars.$input-checkbox-radio-disabled-label-color);
+
+        &::before {
+            background-color: func.color(vars.$input-checkbox-radio-disabled-unchecked-background-color);
+            border: 2px solid func.color(vars.$input-checkbox-radio-disabled-unchecked-border-color);
+        }
+    }
+
+    Expandable content
+    .radio-content {
         margin-left: calc(($checkbox-radio-size + $content-border-width) / 2);
         padding-left: calc(($checkbox-radio-size + (2 * $label-distance) - $content-border-width) / 2);
         padding-top: func.units(4);
@@ -115,11 +120,11 @@ fds-checkbox,
 
     $-content-wrapper-top-offset: calc($-checkbox-radio-margin-top + $checkbox-radio-size + $expand-hit-area + $-checkbox-radio-content-margin-top);
 
-    &:has(.checkbox-content) {
+    &:has(.radio-content) {
         margin-top: $button-distance;
         position: relative;
 
-        &:has(.checkbox-content[aria-hidden="false"]) {
+        &:has(.radio-content[aria-hidden="false"]) {
             &::before {
                 content: '';
                 position: absolute;
@@ -130,23 +135,17 @@ fds-checkbox,
                 top: $-content-wrapper-top-offset;
             }
         }
-
-        &:has(> fds-error-message:not([hidden]), > .form-group-checkbox ~ fds-error-message:not([hidden])) {
-            &::before {
-                height: calc(100% - $-content-wrapper-top-offset - #{$error-space});
-            }
-        }
     }
 
     // Special styling when radio/checkboxes are used to select table rows
     .table--selectable th:first-child,
     .table--selectable td:first-child {
-        fds-checkbox {
+        fds-radio-button {
             margin-top: 0;
             width: $checkbox-radio-size;
             height: $checkbox-radio-size;
 
-            .form-checkbox {
+            .form-radio {
                 margin-top: 0;
 
                 &+label {
