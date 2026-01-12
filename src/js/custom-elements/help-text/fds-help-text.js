@@ -16,19 +16,7 @@ class FDSHelpText extends HTMLElement {
 
         this.classList.add('help-text');
 
-        if (this.getAttribute('help-text-id') !== null && this.getAttribute('help-text-id') !== '') {
-            this.id = this.getAttribute('help-text-id');
-        }
-
         this.#rendered = true;
-    }
-
-    #updateId(newValue) {
-        if (newValue !== null && newValue !== '') {
-            this.id = newValue;
-        } else {
-            this.id = generateAndVerifyUniqueId('help');
-        }
     }
 
     #shouldBeHidden(hiddenValue) {
@@ -55,7 +43,7 @@ class FDSHelpText extends HTMLElement {
 
     /* Attributes which can invoke attributeChangedCallback() */
 
-    static observedAttributes = ['help-text-id', 'hidden'];
+    static observedAttributes = ['id', 'hidden'];
 
     /* --------------------------------------------------
     CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -108,10 +96,6 @@ class FDSHelpText extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (!this.#rendered) return;
-
-        if (name === 'help-text-id') {
-            this.#updateId(newValue);
-        }
 
         if (name === 'hidden' && oldValue !== newValue) {
             if (this.#shouldBeHidden(newValue)) {
