@@ -14,7 +14,7 @@ class FDSErrorMessage extends HTMLElement {
         if (this.#rendered) return;
 
         const hasElements = this.children.length > 0;
-        
+
         if (!hasElements) {
             const iconText = this.getAttribute('icon-text');
             if (iconText !== null && iconText !== '') {
@@ -59,14 +59,26 @@ class FDSErrorMessage extends HTMLElement {
             bubbles: true,
             detail: {
                 errorId: this.id,
+                targets: this.getTargets(),
                 isHidden: this.#shouldBeHidden(this.getAttribute('hidden'))
             }
         }));
     }
 
+    /* --------------------------------------------------
+    CUSTOM ELEMENT METHODS
+    -------------------------------------------------- */
+
+    getTargets() {
+        const targets = this.getAttribute('targets');
+        if (!targets) return [];
+
+        return targets.split(',').map(target => target.trim()).filter(target => target);
+    }
+
     /* Attributes which can invoke attributeChangedCallback() */
 
-    static observedAttributes = ['id', 'icon-text', 'hidden'];
+    static observedAttributes = ['id', 'icon-text', 'hidden', 'targets'];
 
     /* --------------------------------------------------
     CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -98,7 +110,7 @@ class FDSErrorMessage extends HTMLElement {
         }
 
         // Save reference to parent wrapper
-        this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group, fds-radio-button-group');
+        this.#parentWrapper = this.closest('fds-input-wrapper, fds-checkbox, fds-checkbox-group, fds-radio-button-group, fds-date-input');
         this.#parentWrapper?.dispatchEvent(new Event('error-message-callback'));
     }
 
@@ -132,6 +144,10 @@ class FDSErrorMessage extends HTMLElement {
                 this.#removeAriaHidden();
             }
             this.#notifyParent();
+        }
+
+        if (name === 'targets' && oldValue !== newValue) {
+            this.#parentWrapper?.dispatchEvent(new Event('error-message-callback'));
         }
 
         this.#parentWrapper?.dispatchEvent(new Event('error-message-callback'));

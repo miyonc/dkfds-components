@@ -1,0 +1,26 @@
+@use "../variables" as vars;
+@use "../functions" as func;
+@use "../mixins" as mixins;
+@use "../placeholder-selectors";
+
+$input-top-bottom-padding-feedback: calc(8px - #{vars.$input-border-width-feedback});
+$input-left-right-padding-feedback: calc(16px - #{vars.$input-border-width-feedback});
+
+fds-date-input,
+.fds-date-input {
+
+     &:has(fds-error-message:not([targets]):not([hidden])) input {
+        border: vars.$input-border-width-feedback solid func.color(vars.$input-border-color-feedback-error);
+        padding: $input-top-bottom-padding-feedback $input-left-right-padding-feedback;
+    }
+
+     // Year error styling
+    &:has(fds-error-message[targets*="year"]:not([hidden])) .form-group[data-attribute="year"] input,
+    // Month error styling  
+    &:has(fds-error-message[targets*="month"]:not([hidden])) .form-group[data-attribute="month"] input,
+    // Day error styling
+    &:has(fds-error-message[targets*="day"]:not([hidden])) .form-group[data-attribute="day"] input {
+        border: vars.$input-border-width-feedback solid func.color(vars.$input-border-color-feedback-error);
+        padding: $input-top-bottom-padding-feedback $input-left-right-padding-feedback;
+    }
+}

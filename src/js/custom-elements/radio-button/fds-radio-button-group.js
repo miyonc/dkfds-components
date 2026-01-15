@@ -177,10 +177,6 @@ class FDSRadioButtonGroup extends HTMLElement {
     handleIdReferences() {
         if (!this.#fieldset) return;
 
-        if (this.#legend?.id) {
-            this.#fieldset.setAttribute('aria-labelledby', this.#legend.id);
-        }
-
         const idsForAriaDescribedby = [];
 
         // Add help text IDs

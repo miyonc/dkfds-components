@@ -29,6 +29,7 @@ import registerCheckbox from './custom-elements/checkbox/fds-checkbox';
 import registerCheckboxGroup from './custom-elements/checkbox/fds-checkbox-group';
 import registerRadioButton from './custom-elements/radio-button/fds-radio-button';
 import registerRadioButtonGroup from './custom-elements/radio-button/fds-radio-button-group';
+import registerDateInput from './custom-elements/date-input/fds-date-input';
 
 /**
  * The 'polyfills' define key ECMAScript 5 methods that may be missing from
@@ -230,6 +231,7 @@ const registerCustomElements = () => {
   registerCheckboxGroup();
   registerRadioButton();
   registerRadioButtonGroup();
+  registerDateInput();
 };
 
-export { init, registerCustomElements, registerAccordion, renderAccordionHTML, validateAccordionHTML, registerAccordionGroup, registerInputWrapper, registerHelpText, registerCharacterLimit, registerErrorMessage, registerCheckbox, registerCheckboxGroup, registerRadioButton, registerRadioButtonGroup, Accordion, Alert, BackToTop, CharacterLimit, CheckboxToggleContent, Dropdown, DropdownSort, datePicker, ErrorSummary, Modal, Navigation, MenuDropdown, RadioToggleGroup, ResponsiveTable, TableSelectableRows, Tabs, Toast, Tooltip };
+export { init, registerCustomElements, registerAccordion, renderAccordionHTML, validateAccordionHTML, registerAccordionGroup, registerInputWrapper, registerHelpText, registerCharacterLimit, registerErrorMessage, registerCheckbox, registerCheckboxGroup, registerRadioButton, registerRadioButtonGroup, registerDateInput, Accordion, Alert, BackToTop, CharacterLimit, CheckboxToggleContent, Dropdown, DropdownSort, datePicker, ErrorSummary, Modal, Navigation, MenuDropdown, RadioToggleGroup, ResponsiveTable, TableSelectableRows, Tabs, Toast, Tooltip };

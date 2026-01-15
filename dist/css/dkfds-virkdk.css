@@ -13234,3 +13234,16 @@ fds-radio-button-group .tooltip-wrapper,
 .fds-radio-button-group .tooltip-wrapper{
   margin-left:2px;
 }
+
+fds-date-input:has(fds-error-message:not([targets]):not([hidden])) input,
+.fds-date-input:has(fds-error-message:not([targets]):not([hidden])) input{
+  border:2px solid #CC0000;
+  padding:calc(8px - 2px) calc(16px - 2px);
+}
+fds-date-input:has(fds-error-message[targets*=year]:not([hidden])) .form-group[data-attribute=year] input, fds-date-input:has(fds-error-message[targets*=month]:not([hidden])) .form-group[data-attribute=month] input, fds-date-input:has(fds-error-message[targets*=day]:not([hidden])) .form-group[data-attribute=day] input,
+.fds-date-input:has(fds-error-message[targets*=year]:not([hidden])) .form-group[data-attribute=year] input,
+.fds-date-input:has(fds-error-message[targets*=month]:not([hidden])) .form-group[data-attribute=month] input,
+.fds-date-input:has(fds-error-message[targets*=day]:not([hidden])) .form-group[data-attribute=day] input{
+  border:2px solid #CC0000;
+  padding:calc(8px - 2px) calc(16px - 2px);
+}
