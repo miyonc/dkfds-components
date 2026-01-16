@@ -13235,6 +13235,52 @@ fds-radio-button-group .tooltip-wrapper,
   margin-left:2px;
 }
 
+fds-date-input,
+.fds-date-input{
+  display:flex;
+  align-items:flex-end;
+  margin-top:24px;
+}
+fds-date-input:first-child,
+.fds-date-input:first-child{
+  margin-top:0;
+}
+fds-date-input label,
+.fds-date-input label{
+  margin-top:0;
+  font-weight:400;
+}
+fds-date-input input[type=number]::-webkit-inner-spin-button,
+fds-date-input input[type=number]::-webkit-outer-spin-button,
+.fds-date-input input[type=number]::-webkit-inner-spin-button,
+.fds-date-input input[type=number]::-webkit-outer-spin-button{
+  appearance:none;
+  margin:0;
+}
+fds-date-input .form-group-day,
+fds-date-input .form-group-month,
+fds-date-input .form-group-year,
+.fds-date-input .form-group-day,
+.fds-date-input .form-group-month,
+.fds-date-input .form-group-year{
+  margin-right:16px;
+  margin-top:0;
+}
+fds-date-input .form-group-day,
+fds-date-input .form-group-month,
+.fds-date-input .form-group-day,
+.fds-date-input .form-group-month{
+  width:calc(2px + 16px + 16px + 2ch);
+}
+fds-date-input .form-group-year,
+.fds-date-input .form-group-year{
+  width:calc(2px + 16px + 16px + 4ch);
+}
+fds-date-input .button-open-calendar,
+.fds-date-input .button-open-calendar{
+  margin-bottom:8px;
+  display:inline-flex;
+}
 fds-date-input:has(fds-error-message:not([targets]):not([hidden])) input,
 .fds-date-input:has(fds-error-message:not([targets]):not([hidden])) input{
   border:2px solid #CC0000;

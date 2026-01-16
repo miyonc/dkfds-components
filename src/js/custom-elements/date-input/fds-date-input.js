@@ -48,7 +48,7 @@ class FDSDateInput extends HTMLElement {
 
         // Move tooltip into the legend
         const tooltip = this.querySelector(':scope > .tooltip-wrapper');
-        console.log(tooltip)
+
         if (tooltip) legend.appendChild(tooltip);
 
         return legend;
@@ -75,7 +75,7 @@ class FDSDateInput extends HTMLElement {
 
         if (formGroups.length > 0) {
             const dateGroup = document.createElement('div');
-            dateGroup.classList.add('date-group');
+            dateGroup.classList.add('date-group', 'mt-3');
 
             this.#fieldset.insertBefore(dateGroup, formGroups[0]);
 
@@ -154,6 +154,29 @@ class FDSDateInput extends HTMLElement {
         });
     }
 
+    /* Mandatory/optional */
+
+    #setInputRequired() {
+        if (!this.hasAttribute('input-required')) return;
+
+        if (!this.#fieldset) return;
+
+        const inputs = this.#fieldset.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.setAttribute('required', '');
+        });
+    }
+
+    #removeInputRequired() {
+        if (!this.#fieldset) return;
+        
+        const inputs = this.#fieldset.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.removeAttribute('required');
+        });
+    }
+
+
     /* Indicator */
 
     #setIndicator(value = '') {
@@ -166,8 +189,9 @@ class FDSDateInput extends HTMLElement {
         }
 
         const isRequired =
-            this.hasAttribute('required') ||
-            (this.hasAttribute('aria-required') && this.getAttribute('aria-required') !== 'false');
+        this.hasAttribute('required') ||
+        this.hasAttribute('input-required') ||
+        (this.hasAttribute('aria-required') && this.getAttribute('aria-required') !== 'false');
 
         let text = value;
         if (value === '' && isRequired) text = 'skal udfyldes';
@@ -184,7 +208,6 @@ class FDSDateInput extends HTMLElement {
     #removeIndicator() {
         this.#legend?.querySelector(':scope > span.weight-normal')?.remove();
     }
-
 
 
     /* Disabled */
@@ -294,7 +317,7 @@ class FDSDateInput extends HTMLElement {
 
     /* Attributes which can invoke attributeChangedCallback() */
 
-    static observedAttributes = ['label', 'input-disabled', 'input-indicator'];
+    static observedAttributes = ['label', 'input-disabled', 'input-indicator', 'input-required'];
 
     /* --------------------------------------------------
     CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -318,6 +341,8 @@ class FDSDateInput extends HTMLElement {
         this.setClasses();
         this.handleIdReferences();
         if (this.hasAttribute('input-indicator')) this.#setIndicator(this.getAttribute('input-indicator'));
+        if (this.hasAttribute('input-required')) this.#setInputRequired();
+
         if (this.#shouldHaveDisabled(this.getAttribute('input-disabled'))) this.#setDisabled();
 
         this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
@@ -352,9 +377,19 @@ class FDSDateInput extends HTMLElement {
             this.#shouldHaveDisabled(newValue) ? this.#setDisabled() : this.#removeDisabled();
         }
 
-        if (attribute === 'input-indicator') {
+        if (name === 'input-indicator') {
             newValue !== null ? this.#setIndicator(newValue) : this.#removeIndicator();
         }
+
+        if (name === 'input-required' && (oldValue !== newValue)) {
+        if (newValue !== null) {
+            this.#setInputRequired();
+            this.#setIndicator(this.getAttribute('input-indicator') || '');
+        } else {
+            this.#removeInputRequired();
+            this.#setIndicator(this.getAttribute('input-indicator') || '');
+        }
+    }
     }
 }
 
