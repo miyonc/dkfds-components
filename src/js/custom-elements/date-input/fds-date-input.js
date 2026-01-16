@@ -154,6 +154,38 @@ class FDSDateInput extends HTMLElement {
         });
     }
 
+    /* Indicator */
+
+    #setIndicator(value = '') {
+        if (!this.#legend) return;
+
+        if (!this.#legend.querySelector(':scope > span.weight-normal')) {
+            const span = document.createElement('span');
+            span.className = 'weight-normal';
+            this.#legend.appendChild(span);
+        }
+
+        const isRequired =
+            this.hasAttribute('required') ||
+            (this.hasAttribute('aria-required') && this.getAttribute('aria-required') !== 'false');
+
+        let text = value;
+        if (value === '' && isRequired) text = 'skal udfyldes';
+        if (value === '' && !isRequired) text = 'frivilligt';
+
+        const indicatorSpan = this.#legend.querySelector(':scope > span.weight-normal');
+        if (isRequired) {
+            indicatorSpan.textContent = ` (*${text})`;
+        } else {
+            indicatorSpan.textContent = ` (${text})`;
+        }
+    }
+
+    #removeIndicator() {
+        this.#legend?.querySelector(':scope > span.weight-normal')?.remove();
+    }
+
+
 
     /* Disabled */
 
@@ -262,7 +294,7 @@ class FDSDateInput extends HTMLElement {
 
     /* Attributes which can invoke attributeChangedCallback() */
 
-    static observedAttributes = ['label', 'input-disabled'];
+    static observedAttributes = ['label', 'input-disabled', 'input-indicator'];
 
     /* --------------------------------------------------
     CUSTOM ELEMENT CONSTRUCTOR (do not access or add attributes in the constructor)
@@ -285,6 +317,7 @@ class FDSDateInput extends HTMLElement {
         this.#setLabel();
         this.setClasses();
         this.handleIdReferences();
+        if (this.hasAttribute('input-indicator')) this.#setIndicator(this.getAttribute('input-indicator'));
         if (this.#shouldHaveDisabled(this.getAttribute('input-disabled'))) this.#setDisabled();
 
         this.addEventListener('help-text-callback', this.#handleHelpTextCallback);
@@ -319,6 +352,9 @@ class FDSDateInput extends HTMLElement {
             this.#shouldHaveDisabled(newValue) ? this.#setDisabled() : this.#removeDisabled();
         }
 
+        if (attribute === 'input-indicator') {
+            newValue !== null ? this.#setIndicator(newValue) : this.#removeIndicator();
+        }
     }
 }
 
